@@ -47,7 +47,6 @@ export default defineConfig({
       imports: [
         'vue',
         'vue-router',
-        'vue-i18n',
         'vue/macros',
         '@vueuse/head',
         '@vueuse/core',
@@ -106,24 +105,10 @@ export default defineConfig({
     }),
   ],
 
-  // https://github.com/vitest-dev/vitest
-  test: {
-    include: ['test/**/*.test.ts'],
-    environment: 'jsdom',
-    deps: {
-      inline: ['@vue', '@vueuse', 'vue-demi'],
-    },
-  },
-
   // https://github.com/antfu/vite-ssg
   ssgOptions: {
     script: 'async',
     formatting: 'minify',
     onFinished() { generateSitemap() },
-  },
-
-  ssr: {
-    // TODO: workaround until they support native ESM
-    noExternal: ['workbox-window', /vue-i18n/],
   },
 })
