@@ -24,3 +24,6 @@ useHead({
 <template>
   <RouterView />
 </template>
+
+<style src="@vueform/multiselect/themes/default.css" />
+

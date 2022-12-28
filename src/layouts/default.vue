@@ -9,12 +9,12 @@ const navigation = [
 </script>
 
 <template>
-  <header class="bg-app-darkBlue">
+  <header class="bg-app-deepBlue">
     <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
       <div class="flex w-full items-center justify-between border-b border-app-darkBlue-800 lg:border-none">
         <div class="flex items-center">
           <RouterLink to="/" py-16px>
-            <img class="h-10 w-auto" :src="logo" alt="Logo">
+            <img class="darkBlueh-10 w-auto" :src="logo" alt="Logo">
           </RouterLink>
           <div class="ml-10 hidden space-x-8 lg:block">
             <RouterLink v-for="item in navigation" :key="item.name" v-slot="{ href, isActive, navigate }" :to="item.href" custom>
@@ -22,7 +22,7 @@ const navigation = [
             </RouterLink>
           </div>
         </div>
-        <RouterLink to="/list-asset" class="inline-block rounded-3xl border border-transparent bg-app-blue py-8px px-12px text-sm font-medium text-black hover:bg-opacity-75">
+        <RouterLink to="/request" class="inline-block rounded-3xl border border-transparent bg-app-blue py-8px px-12px text-sm font-medium text-black hover:bg-opacity-75">
           List new Asset
         </RouterLink>
       </div>

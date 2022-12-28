@@ -7,6 +7,11 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    BaseCheckbox: typeof import('./components/BaseCheckbox.vue')['default']
+    BaseInput: typeof import('./components/BaseInput.vue')['default']
+    BaseSelect: typeof import('./components/BaseSelect.vue')['default']
+    BaseTextarea: typeof import('./components/BaseTextarea.vue')['default']
+    README: typeof import('./components/README.md')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
