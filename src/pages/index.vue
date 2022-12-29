@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-
 </script>
 
 <template>
   <div>
-    INTRODUCTION
+    <Readme />
   </div>
 </template>

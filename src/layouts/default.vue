@@ -10,7 +10,7 @@ const navigation = [
 
 <template>
   <header class="bg-app-deepBlue">
-    <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
+    <nav app-container aria-label="Top">
       <div class="flex w-full items-center justify-between border-b border-app-darkBlue-800 lg:border-none">
         <div class="flex items-center">
           <RouterLink to="/" py-16px>
