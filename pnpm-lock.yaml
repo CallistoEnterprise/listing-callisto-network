@@ -4,6 +4,8 @@ specifiers:
   '@antfu/eslint-config': ^0.33.1
   '@headlessui/vue': ^1.7.7
   '@iconify-json/carbon': ^1.1.11
+  '@iconify-json/heroicons-outline': ^1.1.1
+  '@iconify-json/heroicons-solid': ^1.1.1
   '@types/markdown-it-link-attributes': ^3.0.1
   '@types/nprogress': ^0.2.0
   '@unocss/reset': ^0.47.6
@@ -63,6 +65,8 @@ dependencies:
 devDependencies:
   '@antfu/eslint-config': 0.33.1_ha6vam6werchizxrnqvarmz2zu
   '@iconify-json/carbon': 1.1.11
+  '@iconify-json/heroicons-outline': 1.1.5
+  '@iconify-json/heroicons-solid': 1.1.6
   '@types/markdown-it-link-attributes': 3.0.1
   '@types/nprogress': 0.2.0
   '@vitejs/plugin-vue': 4.0.0_vite@4.0.0+vue@3.2.45
@@ -865,6 +869,18 @@ packages:
 
   /@iconify-json/carbon/1.1.11:
     resolution: {integrity: sha512-IHkHSNmTM6q6b8DuKSzd+AEMYPZywSxcb+37kZU7ywtcwsGen3aVEvWFykopIWjjwj3xdZ/5UdwJRqhZDQMlNg==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
+  /@iconify-json/heroicons-outline/1.1.5:
+    resolution: {integrity: sha512-GjxxpqgwPUYwFedLLdtd20sm6fFKpdVeQKRK7l04q7VzYgfcYTwd+G7VTWjmJbhykdBlFh963PoU2fvbEMGKtg==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
+  /@iconify-json/heroicons-solid/1.1.6:
+    resolution: {integrity: sha512-akzICPMJ4TIQ13RxprpBNtSYl7M3+k4c5bAivtvK62B18wHS6yT1qWEFH9Q3+n08EQm2E99uHZ9yl2Wam8uMuQ==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: true

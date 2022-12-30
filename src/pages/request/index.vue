@@ -5,7 +5,6 @@ import type { OptionItem } from '~/models/OptionItem'
 
 const requestTypes = [
   { name: 'Token Asset', price: 1000, soy: '104,189' },
-  { name: 'NFT Asset', price: 1500, soy: '155,189' },
 ]
 
 const selectedRequestType = ref(requestTypes[0])
@@ -33,7 +32,7 @@ const request = ref({} as FormRequest)
       </h1>
 
       <RadioGroup v-model="selectedRequestType" mt="48px">
-        <div class="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
+        <div mt-4 grid grid-cols-1 gap-y-6 sm:gap-x-4>
           <RadioGroupOption v-for="assetType in requestTypes" :key="assetType.name" v-slot="{ checked, active }" as="template" :value="assetType">
             <div class="relative block cursor-pointer rounded-lg border bg-white px-6 py-4 shadow-sm focus:outline-none sm:flex sm:justify-between" :class="[checked ? 'border-transparent' : 'border-gray-300', active ? 'border-app-blue ring-2 ring-app-blue' : '']">
               <span class="flex items-center">
@@ -175,7 +174,7 @@ const request = ref({} as FormRequest)
             Additional services
           </div>
           <div class="space-y-5" pt-16px>
-            <BaseCheckbox v-model:value="request.securityAudit" label="Security Audit (+ $1 000)" description="Security Audit is necessary in order to list your token" />
+            <BaseCheckbox :value="true" label="Security Audit (+ $1 000)" description="Security Audit is necessary in order to list your token" />
             <BaseCheckbox v-model:value="request.createFarm" label="Create farm on SOY.Finance (starting at $250)" description="The price is based on the multiplier" />
           </div>
         </div>
