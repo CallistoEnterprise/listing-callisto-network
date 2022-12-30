@@ -4,8 +4,8 @@ import { TOKENLIST } from '@callisto-enterprise/assetslist'
 import metamaskImage from '~/assets/metamask.svg'
 
 const listingTypes = [
-  { name: 'Mainnet Listing', assets: TOKENLIST[820], image: 'https://asset.callisto.network/images/chains/820.png' },
-  { name: 'Testnet Listing', assets: TOKENLIST[20729], image: 'https://asset.callisto.network/images/chains/20729.png' },
+  { name: 'Mainnet Listing', assets: TOKENLIST[820], explorer: 'https://explorer.callisto.network', image: 'https://asset.callisto.network/images/chains/820.png' },
+  { name: 'Testnet Listing', assets: TOKENLIST[20729], explorer: 'https://testnet-explorer.callisto.network', image: 'https://asset.callisto.network/images/chains/20729.png' },
   { name: 'Other chains', assets: [], image: 'https://asset.callisto.network/images/chains/61.png', secondaryImage: 'https://asset.callisto.network/images/chains/199.png' },
 ]
 
@@ -75,7 +75,8 @@ const selectedChain = ref(listingTypes[0])
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   <div class="text-gray-900">
-                    {{ asset.address }}
+                    <a target="_blank" underline :href="`${selectedChain.explorer}/address/${asset.address}`">{{ asset.address }}
+                    </a>
                   </div>
                   <div class="text-gray-500" flex items-center gap-8px>
                     <img :src="metamaskImage" alt="metamask" w-16px>
