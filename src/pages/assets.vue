@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { RadioGroup, RadioGroupDescription, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
+import { TOKENLIST } from '@callisto-enterprise/assetslist'
 import metamaskImage from '~/assets/metamask.svg'
 
 const listingTypes = [
-  { name: 'Mainnet Listing', image: 'https://asset.callisto.network/images/chains/820.png' },
-  { name: 'Testnet Listing', image: 'https://asset.callisto.network/images/chains/20729.png' },
-  { name: 'Other chains', image: 'https://asset.callisto.network/images/chains/61.png', secondaryImage: 'https://asset.callisto.network/images/chains/199.png' },
+  { name: 'Mainnet Listing', assets: TOKENLIST[820], image: 'https://asset.callisto.network/images/chains/820.png' },
+  { name: 'Testnet Listing', assets: TOKENLIST[20729], image: 'https://asset.callisto.network/images/chains/20729.png' },
+  { name: 'Other chains', assets: [], image: 'https://asset.callisto.network/images/chains/61.png', secondaryImage: 'https://asset.callisto.network/images/chains/199.png' },
 ]
 
 const selectedChain = ref(listingTypes[0])
@@ -35,7 +36,7 @@ const selectedChain = ref(listingTypes[0])
       </div>
     </RadioGroup>
 
-    <div class="overflow-x-auto  md:mx-0 mt-48px">
+    <div class="w-full overflow-x-auto  md:mx-0 mt-48px">
       <div class="inline-block min-w-full py-2 align-middle px-2px">
         <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
           <table class="min-w-full divide-y divide-gray-300">
@@ -56,36 +57,36 @@ const selectedChain = ref(listingTypes[0])
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
-              <tr>
+              <tr v-for="asset in selectedChain.assets" :key="asset.address">
                 <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                   <div class="flex items-center">
                     <div class="h-10 w-10 flex-shrink-0">
-                      <TokenImage :src="listingTypes[0].image" />
+                      <TokenImage :src="asset.image" />
                     </div>
                     <div class="ml-4">
                       <div class="font-medium text-gray-900">
-                        Callisto Enterprise
+                        {{ asset.name }}
                       </div>
                       <div class="text-gray-500">
-                        https://callisto.network
+                        ---
                       </div>
                     </div>
                   </div>
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   <div class="text-gray-900">
-                    0x1eAa43544dAa399b87EEcFcC6Fa579D5ea4A6187
+                    {{ asset.address }}
                   </div>
                   <div class="text-gray-500" flex items-center gap-8px>
                     <img :src="metamaskImage" alt="metamask" w-16px>
-                    CLO
+                    {{ asset.symbol }}
                   </div>
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  <span class="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">Audited</span>
+                  <span v-if="asset.isVerified" class="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">Audited</span>
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  Hub, Soy.Finance, Bridge
+                  ---
                 </td>
               </tr>
             </tbody>
