@@ -31,7 +31,7 @@ const modelValue = computed({
 const validate = () => {
   if (props.required && ([undefined, null, '', ' '].includes(modelValue.value))) {
     isValid.value = false
-    errMessage.value = 'form.validator.required'
+    errMessage.value = 'This field is required'
     return
   }
 

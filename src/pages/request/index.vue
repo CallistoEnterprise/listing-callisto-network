@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { CALLISTO_CHAIN_CONSTANTS, CALLISTO_CHAIN_ID } from '@callisto-enterprise/chain-constants'
 import { RadioGroup, RadioGroupDescription, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
 import type { FormRequest } from '~/models/FormRequest'
 import type { OptionItem } from '~/models/OptionItem'
@@ -9,19 +10,32 @@ const requestTypes = [
 
 const selectedRequestType = ref(requestTypes[0])
 
+const mainnet = CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.Mainnet]
+const etc = CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.ETC]
+const btt = CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.BTT]
+
 const chainOptions: Array<OptionItem> = [
   {
-    label: 'Callisto Mainnet',
-    value: 820,
-    image: 'https://asset.callisto.network/images/chains/820.png',
+    label: mainnet.general.chainName,
+    value: mainnet.general.chainId,
+    image: mainnet.general.image,
   },
   {
-    label: 'Callisto Testnet',
-    value: 20729,
-    image: 'https://asset.callisto.network/images/chains/20729.png',
+    label: etc.general.chainName,
+    value: etc.general.chainId,
+    image: etc.general.image,
+  },
+  {
+    label: btt.general.chainName,
+    value: btt.general.chainId,
+    image: btt.general.image,
   },
 ]
 const request = ref({} as FormRequest)
+
+const isChainCallisto = computed(() => request.value.chainId === CALLISTO_CHAIN_ID.Mainnet)
+
+const { addressValidator, minLengthValidator, emailValidator } = useValidators()
 </script>
 
 <template>
@@ -64,18 +78,19 @@ const request = ref({} as FormRequest)
         <div grid grid-cols-1 sm:grid-cols-3 gap-4>
           <BaseInput
             v-model:value="request.name" col-span-1
-            sm:col-span-2 type="text" w-full label="Name of the Token"
+            sm:col-span-2 type="text" w-full label="Name of the Token" required
           />
           <BaseInput
             v-model:value="request.symbol" col-span-1
-            type="text" w-full label="Abbreviation of the token"
+            type="text" w-full label="Symbol of the token"
+            required :validators="[minLengthValidator(2)]"
           />
         </div>
 
         <div grid grid-cols-1 sm:grid-cols-3 gap-4>
           <BaseInput
             v-model:value="request.address" col-span-1
-            sm:col-span-2 type="text" w-full label="Contract address"
+            sm:col-span-2 type="text" w-full label="Contract address" required :validators="[addressValidator()]"
           />
           <BaseSelect v-model:value="request.chainId" col-span-1 label="Chain" w-full :options="chainOptions" required />
         </div>
@@ -114,7 +129,7 @@ const request = ref({} as FormRequest)
         </div>
 
         <div>
-          <BaseTextarea v-model:value="request.about" label="About" type="text" required />
+          <BaseTextarea v-model:value="request.about" label="About" type="text" required :validators="[minLengthValidator(120)]" />
           <p class="mt-2 text-sm text-gray-500">
             Write a few sentences about yourself.
           </p>
@@ -126,7 +141,7 @@ const request = ref({} as FormRequest)
           </template>
         </BaseInput>
 
-        <BaseInput v-model:value="request.email" type="email" label="Email address" placeholder="john@doe.co" w-full required />
+        <BaseInput v-model:value="request.email" type="email" label="Email address" placeholder="john@doe.co" w-full required :validators="[emailValidator()]" />
 
         <div grid grid-cols-1 sm:grid-cols-2 gap-4>
           <BaseInput
@@ -154,7 +169,7 @@ const request = ref({} as FormRequest)
             Where should be listed
           </div>
           <div text-sm text-gray-500>
-            We use assets across multiple platforms, please let us know what is your priority to be there.
+            We use assets on a variety of platforms, please let us know what your priority is.
           </div>
         </div>
 
@@ -163,7 +178,7 @@ const request = ref({} as FormRequest)
             By platforms
           </div>
           <div class="space-y-5" pt-16px>
-            <BaseCheckbox v-model:value="request.includeHub" label="Callisto HUB (beta)" description="https://hub.callisto.network" />
+            <BaseCheckbox v-if="isChainCallisto" v-model:value="request.includeHub" label="Callisto HUB (beta)" description="https://hub.callisto.network" />
             <BaseCheckbox v-model:value="request.includeSoy" label="Callisto SOY finance" description="https://soy.finance" />
             <BaseCheckbox v-model:value="request.includeBridge" label="Bridge (required wrapped version ERC223 of the token)" description="https://bridge.callisto.network" />
           </div>

@@ -16,11 +16,13 @@
   },
   "dependencies": {
     "@callisto-enterprise/assetslist": "^1.4.5",
+    "@callisto-enterprise/chain-constants": "^1.0.5",
     "@headlessui/vue": "^1.7.7",
     "@unocss/reset": "^0.47.6",
     "@vueform/multiselect": "^2.5.8",
     "@vueuse/core": "^9.6.0",
     "@vueuse/head": "^1.0.22",
+    "ethers": "^5.7.2",
     "nprogress": "^0.2.0",
     "pinia": "^2.0.28",
     "vue": "^3.2.45",
