@@ -5,7 +5,7 @@ import metamaskImage from '~/assets/metamask.svg'
 
 const listingTypes = [
   { name: 'Mainnet Listing', assets: TOKENLIST[820], explorer: 'https://explorer.callisto.network', image: 'https://asset.callisto.network/images/chains/820.png' },
-  { name: 'Testnet Listing', assets: TOKENLIST[20729], explorer: 'https://testnet-explorer.callisto.network', image: 'https://asset.callisto.network/images/chains/20729.png' },
+  // { name: 'Testnet Listing', assets: TOKENLIST[20729], explorer: 'https://testnet-explorer.callisto.network', image: 'https://asset.callisto.network/images/chains/20729.png' },
   { name: 'Other chains', assets: [], image: 'https://asset.callisto.network/images/chains/61.png', secondaryImage: 'https://asset.callisto.network/images/chains/199.png' },
 ]
 
@@ -18,7 +18,7 @@ const selectedChain = ref(listingTypes[0])
       Listed Assets
     </h1>
     <RadioGroup v-model="selectedChain" mt="48px">
-      <div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-4">
+      <div class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4">
         <RadioGroupOption v-for="listing in listingTypes" :key="listing.name" v-slot="{ checked, active }" as="template" :value="listing">
           <div class="relative cursor-pointer rounded-lg border bg-white px-6 py-4 shadow-sm focus:outline-none flex justify-between items-center gap-4px" :class="[checked ? 'border-transparent' : 'border-gray-300', active ? 'border-app-blue ring-2 ring-app-blue' : '']">
             <span class="flex items-center">
