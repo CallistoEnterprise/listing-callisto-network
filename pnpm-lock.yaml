@@ -2,7 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@antfu/eslint-config': ^0.33.1
-  '@callisto-enterprise/assetslist': ^1.4.5
+  '@callisto-enterprise/assetslist': ^1.5.0
   '@callisto-enterprise/chain-constants': ^1.0.5
   '@headlessui/vue': ^1.7.7
   '@iconify-json/carbon': ^1.1.11
@@ -53,7 +53,7 @@ specifiers:
   vue3-popper: ^1.5.0
 
 dependencies:
-  '@callisto-enterprise/assetslist': 1.4.5
+  '@callisto-enterprise/assetslist': 1.5.0
   '@callisto-enterprise/chain-constants': 1.0.5
   '@headlessui/vue': 1.7.7_vue@3.2.45
   '@unocss/reset': 0.47.6
@@ -557,8 +557,8 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
-  /@callisto-enterprise/assetslist/1.4.5:
-    resolution: {integrity: sha512-+Cbhp7AlgIZFNICRMemn89bUJ/XDcQDSFNMOIWGGD5Z/2KAtHI7oxSYGoXv12e/aVvqGgfPF1jhMe8g4UAyrDA==}
+  /@callisto-enterprise/assetslist/1.5.0:
+    resolution: {integrity: sha512-6miy0P+5Ka2qMxg8AD3NAXtWm8FA65FmuPimFV2aRx9UvZ8Ja7gYRJSLwR42nwV1J9O+VDU1DKWVMQv8NCPbMw==}
     engines: {node: '>=10'}
     dev: false
 

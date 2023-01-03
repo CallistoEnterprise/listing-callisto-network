@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { RadioGroup, RadioGroupDescription, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
-import { TOKENLIST } from '@callisto-enterprise/assetslist'
+import { AssetType, TOKENLIST } from '@callisto-enterprise/assetslist'
 import metamaskImage from '~/assets/metamask.svg'
 
 const listingTypes = [
@@ -57,7 +57,7 @@ const selectedChain = ref(listingTypes[0])
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
-              <tr v-for="asset in selectedChain.assets" :key="asset.address">
+              <tr v-for="asset in selectedChain.assets.filter((a) => a.category !== AssetType.NATIVE)" :key="asset.address">
                 <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                   <div class="flex items-center">
                     <div class="h-10 w-10 flex-shrink-0">
@@ -68,7 +68,7 @@ const selectedChain = ref(listingTypes[0])
                         {{ asset.name }}
                       </div>
                       <div class="text-gray-500">
-                        ---
+                        <a v-if="asset.projectUrl" target="_blank" :href="asset.projectUrl">{{ asset.projectUrl }}</a>
                       </div>
                     </div>
                   </div>
@@ -79,15 +79,16 @@ const selectedChain = ref(listingTypes[0])
                     </a>
                   </div>
                   <div class="text-gray-500" flex items-center gap-8px>
-                    <img :src="metamaskImage" alt="metamask" w-16px>
+                    <img v-if="asset.address" :src="metamaskImage" alt="metamask" w-16px>
                     {{ asset.symbol }}
                   </div>
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  <span v-if="asset.isVerified" class="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">Audited</span>
+                  <a v-if="asset.audit.isAudited && asset.audit.reportUrl" target="_blank" :href="asset.audit.reportUrl" class="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">Audited: {{ asset.audit.riskLevel }}</a>
+                  <a v-if="asset.audit.isAudited && !asset.audit.reportUrl" target="_blank" :href="asset.audit.reportUrl" class="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">Audited</a>
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  ---
+                  {{ asset.platforms?.join(', ') ?? '---' }}
                 </td>
               </tr>
             </tbody>
