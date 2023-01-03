@@ -12,7 +12,6 @@ declare module '@vue/runtime-core' {
     BaseSelect: typeof import('./components/BaseSelect.vue')['default']
     BaseTextarea: typeof import('./components/BaseTextarea.vue')['default']
     Readme: typeof import('./components/Readme.md')['default']
-    README: typeof import('./components/README.md')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TokenImage: typeof import('./components/TokenImage.vue')['default']

@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { CALLISTO_CHAIN_CONSTANTS, CALLISTO_CHAIN_ID } from '@callisto-enterprise/chain-constants'
 import { RadioGroup, RadioGroupDescription, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
+import useLoginModal from '~/composables/useLoginModal'
+import useWallet from '~/composables/useWallet'
 import type { FormRequest } from '~/models/FormRequest'
 import type { OptionItem } from '~/models/OptionItem'
 
@@ -36,6 +38,8 @@ const request = ref({} as FormRequest)
 const isChainCallisto = computed(() => request.value.chainId === CALLISTO_CHAIN_ID.Mainnet)
 
 const { addressValidator, minLengthValidator, emailValidator } = useValidators()
+const { isLogged, userAddress } = useWallet()
+const { connect } = useLoginModal()
 </script>
 
 <template>
@@ -196,11 +200,16 @@ const { addressValidator, minLengthValidator, emailValidator } = useValidators()
       </div>
       <div flex flex-col sm:flex-row items-center justify-between gap-4 pt="24px">
         <div flex flex-col sm:flex-row items-center gap-4px>
-          <span text-gray-400 text-sm>Your address:</span>
-          <span text-black text-sm>0x93950Cb12f909A0268A455CfafD9952F4923A2dc</span>
+          <template v-if="isLogged">
+            <span text-gray-400 text-sm>Your address:</span>
+            <span text-black text-sm>{{ userAddress }}</span>
+          </template>
         </div>
-        <button type="button" w-auto app-btn>
+        <button v-if="isLogged" type="button" w-auto app-btn>
           Pay 208,387 SOY and Send Request
+        </button>
+        <button v-else app-btn w-auto type="button" @click="connect()">
+          Connect wallet
         </button>
       </div>
     </div>
