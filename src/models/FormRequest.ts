@@ -13,4 +13,5 @@ export interface FormRequest {
   includeBridge: boolean
   securityAudit: boolean
   createFarm: boolean
+  farmToken: string
 }

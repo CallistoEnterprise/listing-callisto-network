@@ -1,16 +1,24 @@
 <script lang="ts" setup>
 import { CALLISTO_CHAIN_CONSTANTS, CALLISTO_CHAIN_ID } from '@callisto-enterprise/chain-constants'
 import { RadioGroup, RadioGroupDescription, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
+import { Contract } from 'ethers'
 import useLoginModal from '~/composables/useLoginModal'
+import usePriceFeed from '~/composables/usePriceFeed'
 import useWallet from '~/composables/useWallet'
 import type { FormRequest } from '~/models/FormRequest'
 import type { OptionItem } from '~/models/OptionItem'
 
-const requestTypes = [
-  { name: 'Token Asset', price: 1000, soy: '104,189' },
-]
+const { addressValidator, minLengthValidator, emailValidator } = useValidators()
+const { isLogged, userAddress } = useWallet()
+const { connect } = useLoginModal()
+const { soyPrice } = usePriceFeed()
 
-const selectedRequestType = ref(requestTypes[0])
+const requestTypes = computed(() => [
+  { name: 'Token Asset', price: 1000, soy: soyPrice.value ? (1000 / soyPrice.value).toFixed(0) : '---' },
+])
+
+const selectedRequestType = ref()
+watch(requestTypes, () => selectedRequestType.value = requestTypes.value[0], { immediate: true })
 
 const mainnet = CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.Mainnet]
 const etc = CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.ETC]
@@ -33,13 +41,29 @@ const chainOptions: Array<OptionItem> = [
     image: btt.general.image,
   },
 ]
+
+const farmTokenOptions: Array<OptionItem> = [
+  {
+    label: 'CLO',
+    value: 'CLO',
+    image: 'https://asset.callisto.network/images/coins/clo.png',
+  },
+  {
+    label: 'SOY',
+    value: 'SOY',
+    image: 'https://asset.callisto.network/images/coins/soy.png',
+  },
+  {
+    label: 'BUSDT',
+    value: 'BUSDT',
+    image: 'https://asset.callisto.network/images/coins/busdt.png',
+  },
+]
 const request = ref({} as FormRequest)
 
 const isChainCallisto = computed(() => request.value.chainId === CALLISTO_CHAIN_ID.Mainnet)
 
-const { addressValidator, minLengthValidator, emailValidator } = useValidators()
-const { isLogged, userAddress } = useWallet()
-const { connect } = useLoginModal()
+const finalPrice = computed(() => ((2000 + (request.value.createFarm ? 250 : 0)) / soyPrice.value).toFixed(0))
 </script>
 
 <template>
@@ -133,9 +157,9 @@ const { connect } = useLoginModal()
         </div>
 
         <div>
-          <BaseTextarea v-model:value="request.about" label="About" type="text" required :validators="[minLengthValidator(120)]" />
+          <BaseTextarea v-model:value="request.about" label="About" type="text" required :validators="[minLengthValidator(120, request.about?.length)]" />
           <p class="mt-2 text-sm text-gray-500">
-            Write a few sentences about yourself.
+            Write a few sentences about yourself, your project, your additional requirements, etc
           </p>
         </div>
 
@@ -194,7 +218,11 @@ const { connect } = useLoginModal()
           </div>
           <div class="space-y-5" pt-16px>
             <BaseCheckbox :value="true" label="Security Audit (+ $1 000)" description="Security Audit is necessary in order to list your token" />
-            <BaseCheckbox v-model:value="request.createFarm" label="Create farm on SOY.Finance (starting at $250)" description="The price is based on the multiplier" />
+            <BaseCheckbox v-model:value="request.createFarm" label="Create farm on SOY.Finance (+ $250)" description="We will create a farm for you, you can specify the pair token" />
+            <div v-if="request.createFarm" flex ml-22px>
+              <BaseSelect v-model:value="request.farmToken" w-160px label="Farm pair token" :options="farmTokenOptions" required />
+            </div>
+            <div flex />
           </div>
         </div>
       </div>
@@ -206,7 +234,7 @@ const { connect } = useLoginModal()
           </template>
         </div>
         <button v-if="isLogged" type="button" w-auto app-btn>
-          Pay 208,387 SOY and Send Request
+          Pay {{ finalPrice }} SOY and Send Request
         </button>
         <button v-else app-btn w-auto type="button" @click="connect()">
           Connect wallet
