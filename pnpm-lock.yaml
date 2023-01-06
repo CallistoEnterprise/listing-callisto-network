@@ -6,6 +6,7 @@ specifiers:
   '@callisto-enterprise/chain-constants': ^1.0.5
   '@headlessui/vue': ^1.7.7
   '@iconify-json/carbon': ^1.1.11
+  '@iconify-json/eos-icons': ^1.1.2
   '@iconify-json/heroicons-outline': ^1.1.1
   '@iconify-json/heroicons-solid': ^1.1.1
   '@metamask/providers': ^10.2.1
@@ -88,6 +89,7 @@ dependencies:
 devDependencies:
   '@antfu/eslint-config': 0.33.1_ha6vam6werchizxrnqvarmz2zu
   '@iconify-json/carbon': 1.1.11
+  '@iconify-json/eos-icons': 1.1.5
   '@iconify-json/heroicons-outline': 1.1.5
   '@iconify-json/heroicons-solid': 1.1.6
   '@types/markdown-it-link-attributes': 3.0.1
@@ -1295,6 +1297,12 @@ packages:
 
   /@iconify-json/carbon/1.1.11:
     resolution: {integrity: sha512-IHkHSNmTM6q6b8DuKSzd+AEMYPZywSxcb+37kZU7ywtcwsGen3aVEvWFykopIWjjwj3xdZ/5UdwJRqhZDQMlNg==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
+  /@iconify-json/eos-icons/1.1.5:
+    resolution: {integrity: sha512-dHTGdyJsk5fr1sK2yQKWZ/f3B720sxA6myJrhj0q981xnTpyBUl7jouL/RmbcV0EEFQ12aDkIlDwJ0zI3G/zag==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: true

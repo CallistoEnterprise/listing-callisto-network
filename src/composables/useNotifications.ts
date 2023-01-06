@@ -1,6 +1,6 @@
 import { useToast } from 'vue-toastification'
 import type { ToastID, ToastOptions } from 'vue-toastification/dist/types/types'
-import BaseNotification from '~/components/base/BaseNotification.vue'
+import BaseNotification from '~/components/BaseNotification.vue'
 import { getTxUrl } from '~/utils/utils'
 
 export enum NotificationVariant {

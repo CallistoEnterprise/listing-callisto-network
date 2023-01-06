@@ -29,7 +29,9 @@ export default function useTransactions() {
 
     const [sendTxError, response] = await to(contractMethodOrTx)
     if (sendTxError) {
-      const errorMessage = `Error: ${sendTxError.message.includes('execution reverted') ? extractErrorMessage(sendTxError.message) : sendTxError.message}`
+      let errorMessage = `Error: ${sendTxError.message.includes('execution reverted') ? extractErrorMessage(sendTxError.message) : sendTxError.message}`
+      if (errorMessage === 'Error: Internal JSON-RPC error.')
+        errorMessage += '<br> Please check your balance.'
 
       toastError({
         heading: 'Transaction error',

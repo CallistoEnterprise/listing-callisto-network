@@ -74,7 +74,7 @@ const sendRequest = async () => {
   const contract = new Contract(import.meta.env.VITE_SOY_ADDR, erc20Abi, signer.value!)
   const amount = finalPrice.value
 
-  const receipt = await sendTransaction(contract.transfer(import.meta.env.SOY_MULTISIG, ethers.utils.parseUnits(`${amount}`, 18)), 'Preparing payment...')
+  const receipt = await sendTransaction(contract.transfer(import.meta.env.VITE_SOY_MULTISIG, ethers.utils.parseUnits(`${amount}`, 18)), 'Preparing payment...')
   if (!receipt)
     return null
 

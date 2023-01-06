@@ -43,6 +43,7 @@
     "@iconify-json/carbon": "^1.1.11",
     "@iconify-json/heroicons-outline": "^1.1.1",
     "@iconify-json/heroicons-solid": "^1.1.1",
+    "@iconify-json/eos-icons": "^1.1.2",
     "@types/markdown-it-link-attributes": "^3.0.1",
     "@types/nprogress": "^0.2.0",
     "@vitejs/plugin-vue": "^4.0.0",
