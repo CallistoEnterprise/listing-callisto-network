@@ -1,17 +1,22 @@
 <script lang="ts" setup>
 import { CALLISTO_CHAIN_CONSTANTS, CALLISTO_CHAIN_ID } from '@callisto-enterprise/chain-constants'
 import { RadioGroup, RadioGroupDescription, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
-import { Contract } from 'ethers'
+import { Contract, ethers } from 'ethers'
 import useLoginModal from '~/composables/useLoginModal'
 import usePriceFeed from '~/composables/usePriceFeed'
 import useWallet from '~/composables/useWallet'
 import type { FormRequest } from '~/models/FormRequest'
 import type { OptionItem } from '~/models/OptionItem'
+import erc20Abi from '~/contracts/abi/erc20.json'
+import useTransactions from '~/composables/web3/useTransactions'
+import useNotifications from '~/composables/useNotifications'
 
 const { addressValidator, minLengthValidator, emailValidator } = useValidators()
-const { isLogged, userAddress } = useWallet()
+const { isLogged, userAddress, signer } = useWallet()
 const { connect } = useLoginModal()
 const { soyPrice } = usePriceFeed()
+const { sendTransaction } = useTransactions()
+const { toastSuccessTx } = useNotifications()
 
 const requestTypes = computed(() => [
   { name: 'Token Asset', price: 1000, soy: soyPrice.value ? (1000 / soyPrice.value).toFixed(0) : '---' },
@@ -64,6 +69,24 @@ const request = ref({} as FormRequest)
 const isChainCallisto = computed(() => request.value.chainId === CALLISTO_CHAIN_ID.Mainnet)
 
 const finalPrice = computed(() => ((2000 + (request.value.createFarm ? 250 : 0)) / soyPrice.value).toFixed(0))
+
+const sendRequest = async () => {
+  const contract = new Contract(import.meta.env.VITE_SOY_ADDR, erc20Abi, signer.value!)
+  const amount = finalPrice.value
+
+  const receipt = await sendTransaction(contract.transfer(import.meta.env.SOY_MULTISIG, ethers.utils.parseUnits(`${amount}`, 18)), 'Preparing payment...')
+  if (!receipt)
+    return null
+
+  if (receipt?.status === 1) {
+    toastSuccessTx({
+      heading: 'Transaction success',
+      content: 'Payment has been succesfull',
+    }, receipt.transactionHash)
+  }
+
+  return receipt
+}
 </script>
 
 <template>
@@ -233,7 +256,7 @@ const finalPrice = computed(() => ((2000 + (request.value.createFarm ? 250 : 0))
             <span text-black text-sm>{{ userAddress }}</span>
           </template>
         </div>
-        <button v-if="isLogged" type="button" w-auto app-btn>
+        <button v-if="isLogged" type="button" w-auto app-btn @click="sendRequest()">
           Pay {{ finalPrice }} SOY and Send Request
         </button>
         <button v-else app-btn w-auto type="button" @click="connect()">

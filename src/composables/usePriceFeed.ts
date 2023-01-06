@@ -19,7 +19,7 @@ const parseNumber = (value: any): number => {
 const fetchTokenPrices = async () => {
   const [clo, soy] = await Promise.all([
     await priceFeed.getPrice('0x0000000000000000000000000000000000000001'),
-    await priceFeed.getPrice('0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65'),
+    await priceFeed.getPrice(import.meta.env.VITE_SOY_ADDR),
   ])
 
   cloPrice.value = parseNumber(ethers.utils.formatUnits(clo, 18))
