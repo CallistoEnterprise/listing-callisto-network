@@ -14,4 +14,10 @@ export interface FormRequest {
   securityAudit: boolean
   createFarm: boolean
   farmToken: string
+  payment: {
+    price: number
+    soyPrice: number
+    destination: string
+    txHash: string
+  }
 }
