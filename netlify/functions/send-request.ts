@@ -13,9 +13,10 @@ const handler: Handler = async (event: HandlerEvent) => {
 
   // todo: VALIDATE DATA!
 
-  const idBranchName = `form-request-${request.address}-${request.address.substring(request.address.length - 5, request.address.length)}`
+  const idBranchName = `form-request-${request.symbol}-${request.address.substring(request.address.length - 10, request.address.length)}`
   const requestBody = `
   ## New Listing Request ${request.symbol}
+  > Created at: ${new Date()}
 
   ### Asset information
   - **name**: ${request.name}
@@ -34,7 +35,7 @@ const handler: Handler = async (event: HandlerEvent) => {
   - **discord**: ${request.discord}
   
   ### Listing details
-  - **platforms**: ${request.includeHub ?? 'HUB,'}${request.includeSoy ?? 'SOY,'} ${request.includeBridge ?? 'BRIDGE,'}
+  - **platforms**: ${request.includeHub ? 'HUB, ' : ''}${request.includeSoy ? 'SOY, ' : ''} ${request.includeBridge ? 'BRIDGE, ' : ''}
   - **audit**: ${request.securityAudit ? 'YES' : 'NO'}
   - **farm**: ${request.createFarm ? `YES (pair with ${request.farmToken})` : 'NO'}
   
@@ -84,12 +85,7 @@ const handler: Handler = async (event: HandlerEvent) => {
     owner: 'CallistoEnterprise',
     repo: 'library-assetslist',
     title: `New Listing Request ${request.symbol}`,
-    body: `
-    Please review all the data and include all related changes in this PR\n\n
-    Token Name: ${request.name} (${request.symbol})\n
-    Token Address: ${request.address}\n
-    Project: ${request.website}
-    `,
+    body: requestBody,
     head: idBranchName,
     base: 'main',
   })

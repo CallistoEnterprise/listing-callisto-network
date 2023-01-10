@@ -17,7 +17,7 @@ const { isLogged, userAddress, signer } = useWallet()
 const { connect } = useLoginModal()
 const { soyPrice } = usePriceFeed()
 const { sendTransaction } = useTransactions()
-const { toastSuccessTx, toastError } = useNotifications()
+const { toastSuccessTx, toastError, toastSuccess } = useNotifications()
 
 const requestTypes = computed(() => [
   { name: 'Token Asset', price: 1000, soy: soyPrice.value ? (1000 / soyPrice.value).toFixed(0) : '---' },
@@ -117,8 +117,8 @@ const sendRequest = async () => {
       txHash: '',
       // txHash: txReceipt.transactionHash,
     }
-    const { data } = useFetch(url).post(request.value).text()
-    return data
+    await useFetch(url).post(request.value).text()
+    toastSuccess({ heading: 'Success!', content: 'Your request has been sent. We will contact you in 14 days.' })
   }
   catch (err) {
     // eslint-disable-next-line no-console
