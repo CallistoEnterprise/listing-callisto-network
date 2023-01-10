@@ -117,7 +117,7 @@ const sendRequest = async () => {
       txHash: '',
       // txHash: txReceipt.transactionHash,
     }
-    await useFetch(url).post(request.value).text()
+    await useFetch(url).post(request.value)
     toastSuccess({ heading: 'Success!', content: 'Your request has been sent. We will contact you in 14 days.' })
   }
   catch (err) {
