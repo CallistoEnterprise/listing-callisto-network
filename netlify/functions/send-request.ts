@@ -3,6 +3,11 @@ import type { Handler, HandlerEvent } from '@netlify/functions'
 import { Octokit } from '@octokit/core'
 import type { FormRequest } from '~/models/FormRequest'
 
+const invalidField = (name: string) => ({
+  statusCode: 422,
+  body: JSON.stringify({ error: `Invalid data: ${name}` }),
+})
+
 const handler: Handler = async (event: HandlerEvent) => {
   // create test PR
   const octokit = new Octokit({
@@ -11,7 +16,21 @@ const handler: Handler = async (event: HandlerEvent) => {
 
   const request = JSON.parse(event.body ?? '{}') as FormRequest
 
-  // todo: VALIDATE DATA!
+  // Data validation
+  if (!request.name?.trim())
+    return invalidField('Token Name')
+  if (!request.symbol?.trim() || request.symbol.length < 2)
+    return invalidField('Token Symbol')
+  if (!request.address?.trim() || !request.address.includes('0x') || request.address.length !== 42)
+    return invalidField('Token Address')
+  if (!request.chainId)
+    return invalidField('Token Chain ID')
+  if (!request.website?.trim())
+    return invalidField('Project Website')
+  if (!request.about?.trim() || request.about.length < 120)
+    return invalidField('Project About')
+  if (!request.email?.trim() || !request.email.includes('@'))
+    return invalidField('Contact E-mail')
 
   const idBranchName = `form-request-${request.symbol}-${request.address.substring(request.address.length - 10, request.address.length)}`
   const requestBody = `

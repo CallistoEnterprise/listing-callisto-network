@@ -100,7 +100,7 @@ const sendTx = async () => {
 
 const sendRequest = async () => {
   if (!isFormValid([
-    fieldName, fieldSymbol, fieldAddress, fieldChain, fieldAbout, fieldWebsite, fieldEmail,
+    fieldName, fieldSymbol, fieldChain, fieldAbout, fieldWebsite, fieldEmail,
   ]))
     return
 
@@ -109,21 +109,21 @@ const sendRequest = async () => {
   //   return
 
   const url = '/.netlify/functions/send-request'
-  try {
-    request.value.payment = {
-      destination: import.meta.env.VITE_SOY_MULTISIG,
-      price: finalPrice.value,
-      soyPrice: soyPrice.value,
-      txHash: '',
-      // txHash: txReceipt.transactionHash,
-    }
-    await useFetch(url).post(request.value)
+  request.value.payment = {
+    destination: import.meta.env.VITE_SOY_MULTISIG,
+    price: finalPrice.value,
+    soyPrice: soyPrice.value,
+    txHash: '',
+    // txHash: txReceipt.transactionHash,
+  }
+  const { data, statusCode } = await useFetch(url).post(request.value).json()
+  if (statusCode.value === 200) {
     toastSuccess({ heading: 'Success!', content: 'Your request has been sent. We will contact you in 14 days.' })
   }
-  catch (err) {
-    // eslint-disable-next-line no-console
-    console.log(err)
-    toastError({ heading: 'Error', content: 'The request failed. Please copy the transcript of the form and contact support with the data' })
+  else {
+    if (data.value.error)
+      toastError({ heading: 'Request Failed', content: data.value.error })
+    else toastError({ heading: 'Request Failed', content: 'The request failed. Please copy the transcript of the form and contact support with the data' })
   }
 }
 </script>
