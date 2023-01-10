@@ -100,7 +100,7 @@ const sendTx = async () => {
 
 const sendRequest = async () => {
   if (!isFormValid([
-    fieldName, fieldSymbol, fieldChain, fieldAbout, fieldWebsite, fieldEmail,
+    fieldName, fieldSymbol, fieldAddress, fieldChain, fieldAbout, fieldWebsite, fieldEmail,
   ]))
     return
 
