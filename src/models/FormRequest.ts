@@ -15,7 +15,7 @@ export interface FormRequest {
   createFarm: boolean
   farmToken: string
   payment: {
-    price: number
+    price: any
     soyPrice: number
     destination: string
     txHash: string

@@ -10,13 +10,14 @@ import type { OptionItem } from '~/models/OptionItem'
 import erc20Abi from '~/contracts/abi/erc20.json'
 import useTransactions from '~/composables/web3/useTransactions'
 import useNotifications from '~/composables/useNotifications'
+import { isFormValid } from '~/utils/utils'
 
 const { addressValidator, minLengthValidator, emailValidator } = useValidators()
 const { isLogged, userAddress, signer } = useWallet()
 const { connect } = useLoginModal()
 const { soyPrice } = usePriceFeed()
 const { sendTransaction } = useTransactions()
-const { toastSuccessTx } = useNotifications()
+const { toastSuccessTx, toastError } = useNotifications()
 
 const requestTypes = computed(() => [
   { name: 'Token Asset', price: 1000, soy: soyPrice.value ? (1000 / soyPrice.value).toFixed(0) : '---' },
@@ -64,13 +65,22 @@ const farmTokenOptions: Array<OptionItem> = [
     image: 'https://asset.callisto.network/images/coins/busdt.png',
   },
 ]
+
+const fieldName = ref()
+const fieldSymbol = ref()
+const fieldAddress = ref()
+const fieldChain = ref()
+const fieldAbout = ref()
+const fieldWebsite = ref()
+const fieldEmail = ref()
+
 const request = ref({} as FormRequest)
 
 const isChainCallisto = computed(() => request.value.chainId === CALLISTO_CHAIN_ID.Mainnet)
 
 const finalPrice = computed(() => ((2000 + (request.value.createFarm ? 250 : 0)) / soyPrice.value).toFixed(0))
 
-const sendRequest = async () => {
+const sendTx = async () => {
   const contract = new Contract(import.meta.env.VITE_SOY_ADDR, erc20Abi, signer.value!)
   const amount = finalPrice.value
 
@@ -86,6 +96,35 @@ const sendRequest = async () => {
   }
 
   return receipt
+}
+
+const sendRequest = async () => {
+  if (!isFormValid([
+    fieldName, fieldSymbol, fieldAddress, fieldChain, fieldAbout, fieldWebsite, fieldEmail,
+  ]))
+    return
+
+  // const txReceipt = await sendTx()
+  // if (!txReceipt)
+  //   return
+
+  const url = '/.netlify/functions/send-request'
+  try {
+    request.value.payment = {
+      destination: import.meta.env.VITE_SOY_MULTISIG,
+      price: finalPrice.value,
+      soyPrice: soyPrice.value,
+      txHash: '',
+      // txHash: txReceipt.transactionHash,
+    }
+    const { data } = useFetch(url).post(request.value).text()
+    return data
+  }
+  catch (err) {
+    // eslint-disable-next-line no-console
+    console.log(err)
+    toastError({ heading: 'Error', content: 'The request failed. Please copy the transcript of the form and contact support with the data' })
+  }
 }
 </script>
 
@@ -128,10 +167,12 @@ const sendRequest = async () => {
         </div>
         <div grid grid-cols-1 sm:grid-cols-3 gap-4>
           <BaseInput
+            ref="fieldName"
             v-model:value="request.name" col-span-1
             sm:col-span-2 type="text" w-full label="Name of the Token" required
           />
           <BaseInput
+            ref="fieldSymbol"
             v-model:value="request.symbol" col-span-1
             type="text" w-full label="Symbol of the token"
             required :validators="[minLengthValidator(2)]"
@@ -140,10 +181,11 @@ const sendRequest = async () => {
 
         <div grid grid-cols-1 sm:grid-cols-3 gap-4>
           <BaseInput
+            ref="fieldAddress"
             v-model:value="request.address" col-span-1
             sm:col-span-2 type="text" w-full label="Contract address" required :validators="[addressValidator()]"
           />
-          <BaseSelect v-model:value="request.chainId" col-span-1 label="Chain" w-full :options="chainOptions" required />
+          <BaseSelect ref="fieldChain" v-model:value="request.chainId" col-span-1 label="Chain" w-full :options="chainOptions" required />
         </div>
 
         <div class="sm:col-span-6">
@@ -180,19 +222,19 @@ const sendRequest = async () => {
         </div>
 
         <div>
-          <BaseTextarea v-model:value="request.about" label="About" type="text" required :validators="[minLengthValidator(120, request.about?.length)]" />
+          <BaseTextarea ref="fieldAbout" v-model:value="request.about" label="About" type="text" required :validators="[minLengthValidator(120, request.about?.length)]" />
           <p class="mt-2 text-sm text-gray-500">
             Write a few sentences about yourself, your project, your additional requirements, etc
           </p>
         </div>
 
-        <BaseInput v-model:value="request.website" type="text" label="Project website" placeholder="www.example.com" w-full required>
+        <BaseInput ref="fieldWebsite" v-model:value="request.website" type="text" label="Project website" placeholder="www.example.com" w-full required>
           <template #prefix>
             https://
           </template>
         </BaseInput>
 
-        <BaseInput v-model:value="request.email" type="email" label="Email address" placeholder="john@doe.co" w-full required :validators="[emailValidator()]" />
+        <BaseInput ref="fieldEmail" v-model:value="request.email" type="email" label="Email address" placeholder="john@doe.co" w-full required :validators="[emailValidator()]" />
 
         <div grid grid-cols-1 sm:grid-cols-2 gap-4>
           <BaseInput
