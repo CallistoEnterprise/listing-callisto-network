@@ -111,7 +111,7 @@ const handler: Handler = async (event: HandlerEvent) => {
       name: 'Callisto Listing FE',
       email: 'listing-callisto@callisto-enterprise.com',
     },
-    content: btoa(requestBody),
+    content: request.icon,
     branch: idBranchName,
   })
 
