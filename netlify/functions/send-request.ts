@@ -109,10 +109,10 @@ const handler: Handler = async (event: HandlerEvent) => {
 
   // create a new file with icon
   console.log('create a icon file')
-  await octokit.request(`PUT /repos/CallistoEnterprise/library-assetslist/contents/listing-requests/${idBranchName}/token-icon`, {
+  await octokit.request(`PUT /repos/CallistoEnterprise/library-assetslist/contents/listing-requests/${idBranchName}/${request.symbol}.png`, {
     owner: 'CallistoEnterprise',
     repo: 'library-assetslist',
-    path: `listing-requests/${idBranchName}/token-icon`,
+    path: `listing-requests/${idBranchName}/${request.symbol}.png`,
     message: `New Listing Request Token Icon ${request.symbol}`,
     committer: {
       name: 'Callisto Listing FE',
