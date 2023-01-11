@@ -25,6 +25,8 @@ const handler: Handler = async (event: HandlerEvent) => {
     return invalidField('Token Address')
   if (!request.chainId)
     return invalidField('Token Chain ID')
+  if (!request.icon?.trim())
+    return invalidField('Token Icon')
   if (!request.website?.trim())
     return invalidField('Project Website')
   if (!request.about?.trim() || request.about.length < 120)
@@ -85,11 +87,26 @@ const handler: Handler = async (event: HandlerEvent) => {
 
   // create a new file with request data
   console.log('create a new file')
-  await octokit.request(`PUT /repos/CallistoEnterprise/library-assetslist/contents/${idBranchName}.md`, {
+  await octokit.request(`PUT /repos/CallistoEnterprise/library-assetslist/contents/listing-requests/${idBranchName}/data.md`, {
     owner: 'CallistoEnterprise',
     repo: 'library-assetslist',
-    path: `${idBranchName}.md`,
-    message: `New Listing Request ${request.symbol}`,
+    path: `listing-requests/${idBranchName}/data.md`,
+    message: `New Listing Request Data ${request.symbol}`,
+    committer: {
+      name: 'Callisto Listing FE',
+      email: 'listing-callisto@callisto-enterprise.com',
+    },
+    content: btoa(requestBody),
+    branch: idBranchName,
+  })
+
+  // create a new file with icon
+  console.log('create a icon file')
+  await octokit.request(`PUT /repos/CallistoEnterprise/library-assetslist/contents/listing-requests/${idBranchName}/token-icon`, {
+    owner: 'CallistoEnterprise',
+    repo: 'library-assetslist',
+    path: `listing-requests/${idBranchName}/token-icon`,
+    message: `New Listing Request Token Icon ${request.symbol}`,
     committer: {
       name: 'Callisto Listing FE',
       email: 'listing-callisto@callisto-enterprise.com',

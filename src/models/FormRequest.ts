@@ -3,6 +3,7 @@ export interface FormRequest {
   symbol: string
   address: string
   chainId: number
+  icon: string
   about: string
   website: string
   email: string

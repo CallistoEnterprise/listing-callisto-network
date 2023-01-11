@@ -10,7 +10,7 @@ import type { OptionItem } from '~/models/OptionItem'
 import erc20Abi from '~/contracts/abi/erc20.json'
 import useTransactions from '~/composables/web3/useTransactions'
 import useNotifications from '~/composables/useNotifications'
-import { isFormValid } from '~/utils/utils'
+import { createBase64Image, isFormValid } from '~/utils/utils'
 
 const { addressValidator, minLengthValidator, emailValidator } = useValidators()
 const { isLogged, userAddress, signer } = useWallet()
@@ -73,12 +73,21 @@ const fieldChain = ref()
 const fieldAbout = ref()
 const fieldWebsite = ref()
 const fieldEmail = ref()
+const fieldIcon = ref<HTMLInputElement>()
 
 const request = ref({} as FormRequest)
 
 const isChainCallisto = computed(() => request.value.chainId === CALLISTO_CHAIN_ID.Mainnet)
 
 const finalPrice = computed(() => ((2000 + (request.value.createFarm ? 250 : 0)) / soyPrice.value).toFixed(0))
+
+const onFileSelected = async (event: any) => {
+  const files: any[] = event.target.files || event.dataTransfer.files
+  if (!files.length)
+    return
+  // convert icon to base64
+  request.value.icon = await createBase64Image(files[0])
+}
 
 const sendTx = async () => {
   const contract = new Contract(import.meta.env.VITE_SOY_ADDR, erc20Abi, signer.value!)
@@ -189,16 +198,23 @@ const sendRequest = async () => {
         </div>
 
         <div class="sm:col-span-6">
-          <label for="cover-photo" class="block text-sm font-medium text-gray-700">Token icon</label>
-          <div class="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
-            <div class="space-y-1 text-center">
+          <label for="cover-photo" class="block text-sm font-medium text-gray-700">Token icon *</label>
+          <div
+            class="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6" @dragover.prevent
+            @drop.prevent="onFileSelected"
+          >
+            <div v-if="request.icon" flex flex-col items-center gap-12px>
+              <img w-64px h-64px :src="request.icon">
+              <span text-sm text-gray-600 cursor-pointer @click="request.icon = ''">Remove icon</span>
+            </div>
+            <div v-else class="space-y-1 text-center">
               <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                 <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
               <div class="flex text-sm text-gray-600">
                 <label for="file-upload" class="relative cursor-pointer rounded-md bg-white font-medium text-app-blue focus-within:outline-none focus-within:ring-2 focus-within:ring-app-blue focus-within:ring-offset-2 hover:text-app-blue">
                   <span>Upload an icon</span>
-                  <input id="file-upload" name="file-upload" type="file" class="sr-only">
+                  <input id="file-upload" ref="fieldIcon" name="file-upload" type="file" class="sr-only" @change="onFileSelected">
                 </label>
                 <p class="pl-1">
                   or drag and drop
