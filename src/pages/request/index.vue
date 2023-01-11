@@ -17,7 +17,7 @@ const { isLogged, userAddress, signer } = useWallet()
 const { connect } = useLoginModal()
 const { soyPrice } = usePriceFeed()
 const { sendTransaction } = useTransactions()
-const { toastSuccessTx, toastError, toastSuccess } = useNotifications()
+const { toastSuccessTx, toastError, toastSuccess, toastPending, dismissNotification } = useNotifications()
 
 const requestTypes = computed(() => [
   { name: 'Token Asset', price: 1000, soy: soyPrice.value ? (1000 / soyPrice.value).toFixed(0) : '---' },
@@ -113,11 +113,28 @@ const sendRequest = async () => {
   ]))
     return
 
+  const url = '/.netlify/functions/send-request'
+
+  // Test server validation
+  let toastId = toastPending({
+    heading: 'Preparing your request',
+    content: 'Validating the data...',
+  })
+  const { data: validationData, statusCode: validationStatus } = await useFetch(url).post({ ...request.value, vlidationOnly: true } as FormRequest).json()
+  if (validationStatus.value !== 200) {
+    if (validationData.value.error)
+      toastError({ heading: 'Form is not valid', content: validationData.value.error, replaceID: toastId })
+    else toastError({ heading: 'Form is not valid', content: 'Unhandled exception', replaceID: toastId })
+    return
+  }
+
+  dismissNotification(toastId)
+
+  // Proceed payment
   // const txReceipt = await sendTx()
   // if (!txReceipt)
   //   return
 
-  const url = '/.netlify/functions/send-request'
   request.value.payment = {
     destination: import.meta.env.VITE_SOY_MULTISIG,
     price: finalPrice.value,
@@ -125,14 +142,21 @@ const sendRequest = async () => {
     txHash: '',
     // txHash: txReceipt.transactionHash,
   }
+
+  // Sent request
+  toastId = toastPending({
+    heading: 'Sending your request',
+    content: 'Please be patient...',
+  })
+
   const { data, statusCode } = await useFetch(url).post(request.value).json()
   if (statusCode.value === 200) {
-    toastSuccess({ heading: 'Success!', content: 'Your request has been sent. We will contact you in 14 days.' })
+    toastSuccess({ heading: 'Success!', content: 'Your request has been sent. We will contact you in 14 days.', replaceID: toastId })
   }
   else {
     if (data.value.error)
-      toastError({ heading: 'Request Failed', content: data.value.error })
-    else toastError({ heading: 'Request Failed', content: 'The request failed. Please copy the transcript of the form and contact support with the data' })
+      toastError({ heading: 'Request Failed', content: data.value.error, replaceID: toastId })
+    else toastError({ heading: 'Request Failed', content: 'The request failed. Please copy the transcript of the form and contact support with the data', replaceID: toastId })
   }
 }
 </script>

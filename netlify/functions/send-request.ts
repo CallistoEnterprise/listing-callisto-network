@@ -25,7 +25,7 @@ const handler: Handler = async (event: HandlerEvent) => {
     return invalidField('Token Address')
   if (!request.chainId)
     return invalidField('Token Chain ID')
-  if (!request.icon?.trim())
+  if (!request.icon?.trim() || !request.icon.includes('data:image/png'))
     return invalidField('Token Icon')
   if (!request.website?.trim())
     return invalidField('Project Website')
@@ -33,6 +33,13 @@ const handler: Handler = async (event: HandlerEvent) => {
     return invalidField('Project About')
   if (!request.email?.trim() || !request.email.includes('@'))
     return invalidField('Contact E-mail')
+
+  if (request.vlidationOnly) {
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: 'Data are valid!' }),
+    }
+  }
 
   const idBranchName = `form-request-${request.symbol}-${request.address.substring(request.address.length - 10, request.address.length)}`
   const requestBody = `
@@ -111,7 +118,7 @@ const handler: Handler = async (event: HandlerEvent) => {
       name: 'Callisto Listing FE',
       email: 'listing-callisto@callisto-enterprise.com',
     },
-    content: request.icon,
+    content: request.icon.split(',')[1], // remove the begining of base64 (data:image/png;base64,.....)
     branch: idBranchName,
   })
 

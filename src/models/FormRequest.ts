@@ -21,4 +21,5 @@ export interface FormRequest {
     destination: string
     txHash: string
   }
+  vlidationOnly: boolean
 }
