@@ -19,6 +19,11 @@ const { soyPrice } = usePriceFeed()
 const { sendTransaction } = useTransactions()
 const { toastSuccessTx, toastError, toastSuccess, toastPending, dismissNotification } = useNotifications()
 
+onMounted(() => {
+  if (!isLogged.value)
+    connect()
+})
+
 const requestTypes = computed(() => [
   { name: 'Token Asset', price: 1000, soy: soyPrice.value ? (1000 / soyPrice.value).toFixed(0) : '---' },
 ])
