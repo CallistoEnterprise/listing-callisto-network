@@ -26,6 +26,10 @@ const requestTypes = computed(() => [
 const selectedRequestType = ref()
 watch(requestTypes, () => selectedRequestType.value = requestTypes.value[0], { immediate: true })
 
+const request = ref({} as FormRequest)
+
+// const existedAddressValidator = computed<BaseValidator>(() => ({ validator: (val: string) => !val || !request.value.chainId || !TOKENLIST[request.value.chainId as keyof typeof TOKENLIST].map(a => a.address).includes(val), message: 'This address is already listed' }))
+
 const mainnet = CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.Mainnet]
 const etc = CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.ETC]
 const btt = CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.BTT]
@@ -76,8 +80,6 @@ const fieldEmail = ref()
 const fieldIcon = ref<HTMLInputElement>()
 
 const isMainnet = computed(() => import.meta.env.VITE_SOY_CHAIN_ID === 820)
-
-const request = ref({} as FormRequest)
 
 const isChainCallisto = computed(() => request.value.chainId === CALLISTO_CHAIN_ID.Mainnet)
 
@@ -216,12 +218,12 @@ const sendRequest = async () => {
         </div>
 
         <div grid grid-cols-1 sm:grid-cols-3 gap-4>
+          <BaseSelect ref="fieldChain" v-model:value="request.chainId" col-span-1 label="Chain" w-full :options="chainOptions" required />
           <BaseInput
             ref="fieldAddress"
             v-model:value="request.address" col-span-1
             sm:col-span-2 type="text" w-full label="Contract address" required :validators="[addressValidator()]"
           />
-          <BaseSelect ref="fieldChain" v-model:value="request.chainId" col-span-1 label="Chain" w-full :options="chainOptions" required />
         </div>
 
         <div class="sm:col-span-6">

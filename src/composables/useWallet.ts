@@ -128,8 +128,11 @@ export default function useWallet() {
 
   const addToken = async (asset: Asset) => {
     const { connect } = useLoginModal()
-    if (!isLogged.value)
+    if (!isLogged.value) {
       await connect()
+      if (!!connectedChain.value && connectedChain.value !== +import.meta.env.VITE_CHAIN_ID)
+        return
+    }
 
     await rawWalletProvider.value?.request({
       method: 'wallet_watchAsset',
