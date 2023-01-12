@@ -10,6 +10,7 @@ const listingTypes = [
 ]
 
 const selectedChain = ref(listingTypes[0])
+const { addToken } = useWallet()
 </script>
 
 <template>
@@ -78,7 +79,7 @@ const selectedChain = ref(listingTypes[0])
                     <a target="_blank" underline :href="`${selectedChain.explorer}/address/${asset.address}`">{{ asset.address }}
                     </a>
                   </div>
-                  <div class="text-gray-500" flex items-center gap-8px>
+                  <div cursor-pointer class="text-gray-500" flex items-center gap-8px @click="addToken(asset)">
                     <img v-if="asset.address" :src="metamaskImage" alt="metamask" w-16px>
                     {{ asset.symbol }}
                   </div>

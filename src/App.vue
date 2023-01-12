@@ -22,6 +22,7 @@ useHead({
 </script>
 
 <template>
+  <ModalWrongNetwork />
   <RouterView />
 </template>
 

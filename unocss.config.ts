@@ -37,7 +37,7 @@ export default defineConfig({
     transformerDirectives(),
     transformerVariantGroup(),
   ],
-  safelist: 'prose prose-sm m-auto text-left'.split(' '),
+  safelist: 'prose prose-sm m-auto text-left md:w-400px md:w-720px md:w-920px md:w-1020px'.split(' '),
   theme: {
     colors: {
       app: {

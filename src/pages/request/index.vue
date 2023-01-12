@@ -12,7 +12,7 @@ import useTransactions from '~/composables/web3/useTransactions'
 import useNotifications from '~/composables/useNotifications'
 import { createBase64Image, isFormValid } from '~/utils/utils'
 
-const { addressValidator, minLengthValidator, emailValidator } = useValidators()
+const { addressValidator, minLengthValidator, emailValidator, maxLengthValidator } = useValidators()
 const { isLogged, userAddress, signer } = useWallet()
 const { connect } = useLoginModal()
 const { soyPrice } = usePriceFeed()
@@ -75,11 +75,13 @@ const fieldWebsite = ref()
 const fieldEmail = ref()
 const fieldIcon = ref<HTMLInputElement>()
 
+const isMainnet = computed(() => import.meta.env.VITE_SOY_CHAIN_ID === 820)
+
 const request = ref({} as FormRequest)
 
 const isChainCallisto = computed(() => request.value.chainId === CALLISTO_CHAIN_ID.Mainnet)
 
-const finalPrice = computed(() => ((2000 + (request.value.createFarm ? 250 : 0)) / soyPrice.value).toFixed(0))
+const finalPrice = computed(() => isMainnet.value ? ((2000 + (request.value.createFarm ? 250 : 0)) / soyPrice.value).toFixed(0) : '1')
 
 const onFileSelected = async (event: any) => {
   const files: any[] = event.target.files || event.dataTransfer.files
@@ -90,10 +92,12 @@ const onFileSelected = async (event: any) => {
 }
 
 const sendTx = async () => {
-  const contract = new Contract(import.meta.env.VITE_SOY_ADDR, erc20Abi, signer.value!)
+  const soyAddr = isMainnet.value ? import.meta.env.VITE_SOY_ADDR : '0x4c20231BCc5dB8D805DB9197C84c8BA8287CbA92'
+  const contract = new Contract(soyAddr, erc20Abi, signer.value!)
   const amount = finalPrice.value
 
-  const receipt = await sendTransaction(contract.transfer(import.meta.env.VITE_SOY_MULTISIG, ethers.utils.parseUnits(`${amount}`, 18)), 'Preparing payment...')
+  const destination = isMainnet.value ? import.meta.env.VITE_SOY_MULTISIG : userAddress.value
+  const receipt = await sendTransaction(contract.transfer(destination, ethers.utils.parseUnits(`${amount}`, 18)), 'Preparing payment...')
   if (!receipt)
     return null
 
@@ -131,16 +135,15 @@ const sendRequest = async () => {
   dismissNotification(toastId)
 
   // Proceed payment
-  // const txReceipt = await sendTx()
-  // if (!txReceipt)
-  //   return
+  const txReceipt = await sendTx()
+  if (!txReceipt)
+    return
 
   request.value.payment = {
     destination: import.meta.env.VITE_SOY_MULTISIG,
     price: finalPrice.value,
     soyPrice: soyPrice.value,
-    txHash: '',
-    // txHash: txReceipt.transactionHash,
+    txHash: txReceipt.transactionHash,
   }
 
   // Sent request
@@ -151,7 +154,7 @@ const sendRequest = async () => {
 
   const { data, statusCode } = await useFetch(url).post(request.value).json()
   if (statusCode.value === 200) {
-    toastSuccess({ heading: 'Success!', content: 'Your request has been sent. We will contact you in 14 days.', replaceID: toastId })
+    toastSuccess({ heading: 'Success!', content: 'Your request has been sent. We will contact you within 14 days.', replaceID: toastId })
   }
   else {
     if (data.value.error)
@@ -208,7 +211,7 @@ const sendRequest = async () => {
             ref="fieldSymbol"
             v-model:value="request.symbol" col-span-1
             type="text" w-full label="Symbol of the token"
-            required :validators="[minLengthValidator(2)]"
+            required :validators="[minLengthValidator(2), maxLengthValidator(8)]"
           />
         </div>
 

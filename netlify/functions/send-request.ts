@@ -19,7 +19,7 @@ const handler: Handler = async (event: HandlerEvent) => {
   // Data validation
   if (!request.name?.trim())
     return invalidField('Token Name')
-  if (!request.symbol?.trim() || request.symbol.length < 2)
+  if (!request.symbol?.trim() || request.symbol.length < 2 || request.symbol.length > 8)
     return invalidField('Token Symbol')
   if (!request.address?.trim() || !request.address.includes('0x') || request.address.length !== 42)
     return invalidField('Token Address')
