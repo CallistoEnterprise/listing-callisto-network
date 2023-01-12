@@ -132,6 +132,7 @@ export default function useWallet() {
       await connect()
       if (!!connectedChain.value && connectedChain.value !== +import.meta.env.VITE_CHAIN_ID)
         return
+        // todo: switch to asset network!
     }
 
     await rawWalletProvider.value?.request({

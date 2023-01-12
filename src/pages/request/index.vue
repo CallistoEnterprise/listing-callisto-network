@@ -177,6 +177,7 @@ const sendRequest = async () => {
 </script>
 
 <template>
+  <ModalWrongNetwork />
   <div>
     <div flex flex-col items-center>
       <h1 app-h1>
