@@ -2,6 +2,7 @@
 import { CALLISTO_CHAIN_CONSTANTS, CALLISTO_CHAIN_ID } from '@callisto-enterprise/chain-constants'
 import { RadioGroup, RadioGroupDescription, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
 import { Contract, ethers } from 'ethers'
+import { TOKENLIST } from '@callisto-enterprise/assetslist'
 import useLoginModal from '~/composables/useLoginModal'
 import usePriceFeed from '~/composables/usePriceFeed'
 import useWallet from '~/composables/useWallet'
@@ -32,8 +33,6 @@ const selectedRequestType = ref()
 watch(requestTypes, () => selectedRequestType.value = requestTypes.value[0], { immediate: true })
 
 const request = ref({} as FormRequest)
-
-// const existedAddressValidator = computed<BaseValidator>(() => ({ validator: (val: string) => !val || !request.value.chainId || !TOKENLIST[request.value.chainId as keyof typeof TOKENLIST].map(a => a.address).includes(val), message: 'This address is already listed' }))
 
 const mainnet = CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.Mainnet]
 const etc = CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.ETC]
@@ -123,6 +122,12 @@ const sendRequest = async () => {
     fieldName, fieldSymbol, fieldAddress, fieldChain, fieldAbout, fieldWebsite, fieldEmail,
   ]))
     return
+
+  // check existed address
+  if (TOKENLIST[request.value.chainId as keyof typeof TOKENLIST].map(a => a.address).includes(request.value.address)) {
+    toastError({ heading: 'Form is not valid', content: 'This address is already listed' })
+    return
+  }
 
   const url = '/.netlify/functions/send-request'
 
