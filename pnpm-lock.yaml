@@ -2,7 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@antfu/eslint-config': ^0.33.1
-  '@callisto-enterprise/assetslist': ^1.5.0
+  '@callisto-enterprise/assetslist': ^1.6.2
   '@callisto-enterprise/chain-constants': ^1.0.5
   '@headlessui/vue': ^1.7.7
   '@iconify-json/carbon': ^1.1.11
@@ -65,7 +65,7 @@ specifiers:
   web3modal: ^1.9.10
 
 dependencies:
-  '@callisto-enterprise/assetslist': 1.5.0
+  '@callisto-enterprise/assetslist': 1.6.2
   '@callisto-enterprise/chain-constants': 1.0.5
   '@headlessui/vue': 1.7.7_vue@3.2.45
   '@metamask/providers': 10.2.1
@@ -632,8 +632,8 @@ packages:
       '@babel/helper-validator-identifier': 7.19.1
       to-fast-properties: 2.0.0
 
-  /@callisto-enterprise/assetslist/1.5.0:
-    resolution: {integrity: sha512-6miy0P+5Ka2qMxg8AD3NAXtWm8FA65FmuPimFV2aRx9UvZ8Ja7gYRJSLwR42nwV1J9O+VDU1DKWVMQv8NCPbMw==}
+  /@callisto-enterprise/assetslist/1.6.2:
+    resolution: {integrity: sha512-g7dfKFQDQYHcrbIeCalB7FBEMEUZH9VOcZldupnumyXalhjVC8SwRk6XZDVtY36n4RgwTZ4WsA7Z9DHC/BwhNw==}
     engines: {node: '>=10'}
     dev: false
 
