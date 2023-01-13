@@ -126,27 +126,28 @@ export default function useWallet() {
 
   const isLogged = computed(() => userAddress.value !== undefined)
 
-  const addToken = async (asset: Asset) => {
+  const addToken = async (asset: Asset, network: ChainConstants) => {
     const { connect } = useLoginModal()
-    if (!isLogged.value) {
+    if (!isLogged.value)
       await connect()
-      if (!!connectedChain.value && connectedChain.value !== +import.meta.env.VITE_CHAIN_ID)
-        return
-        // todo: switch to asset network!
-    }
 
-    await rawWalletProvider.value?.request({
-      method: 'wallet_watchAsset',
-      params: {
-        type: 'ERC20',
-        options: {
-          address: asset.address,
-          symbol: asset.symbol,
-          decimals: asset.decimals,
-          image: asset.image,
+    if (connectedChain.value === network.general.chainId) {
+      await rawWalletProvider.value?.request({
+        method: 'wallet_watchAsset',
+        params: {
+          type: 'ERC20',
+          options: {
+            address: asset.address,
+            symbol: asset.symbol,
+            decimals: asset.decimals,
+            image: asset.image,
+          },
         },
-      },
-    })
+      })
+    }
+    else {
+      switchNetwork(network)
+    }
   }
 
   return {

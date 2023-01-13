@@ -1,15 +1,16 @@
 <script lang="ts" setup>
 import { RadioGroup, RadioGroupDescription, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
 import { AssetType, TOKENLIST } from '@callisto-enterprise/assetslist'
+import { CALLISTO_CHAIN_CONSTANTS } from '@callisto-enterprise/chain-constants'
 import metamaskImage from '~/assets/metamask.svg'
 
 const listingTypes = [
-  { name: 'Mainnet Listing', assets: TOKENLIST[820], explorer: 'https://explorer.callisto.network', image: 'https://asset.callisto.network/images/chains/820.png' },
+  { name: 'Mainnet Listing', networks: [CALLISTO_CHAIN_CONSTANTS[820]], explorer: 'https://explorer.callisto.network', image: 'https://asset.callisto.network/images/chains/820.png' },
   // { name: 'Testnet Listing', assets: TOKENLIST[20729], explorer: 'https://testnet-explorer.callisto.network', image: 'https://asset.callisto.network/images/chains/20729.png' },
   { name: 'Other chains', assets: [], image: 'https://asset.callisto.network/images/chains/61.png', secondaryImage: 'https://asset.callisto.network/images/chains/199.png' },
 ]
 
-const selectedChain = ref(listingTypes[0])
+const selectedListing = ref(listingTypes[0])
 const { addToken } = useWallet()
 </script>
 
@@ -18,7 +19,7 @@ const { addToken } = useWallet()
     <h1 app-h1>
       Listed Assets
     </h1>
-    <RadioGroup v-model="selectedChain" mt="48px">
+    <RadioGroup v-model="selectedListing" mt="48px">
       <div class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4">
         <RadioGroupOption v-for="listing in listingTypes" :key="listing.name" v-slot="{ checked, active }" as="template" :value="listing">
           <div class="relative cursor-pointer rounded-lg border bg-white px-6 py-4 shadow-sm focus:outline-none flex justify-between items-center gap-4px" :class="[checked ? 'border-transparent' : 'border-gray-300', active ? 'border-app-blue ring-2 ring-app-blue' : '']">
@@ -40,7 +41,7 @@ const { addToken } = useWallet()
     <div class="w-full overflow-x-auto  md:mx-0 mt-48px">
       <div class="inline-block min-w-full py-2 align-middle px-2px">
         <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-          <table class="min-w-full divide-y divide-gray-300">
+          <table v-for="network in selectedListing.networks" :key="network.general.chainId" class="min-w-full divide-y divide-gray-300">
             <thead class="bg-gray-50">
               <tr>
                 <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
@@ -58,7 +59,7 @@ const { addToken } = useWallet()
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
-              <tr v-for="asset in selectedChain.assets.filter((a) => a.category !== AssetType.NATIVE)" :key="asset.address">
+              <tr v-for="asset in TOKENLIST[network.general.chainId as keyof typeof TOKENLIST].filter((a) => a.category !== AssetType.NATIVE)" :key="asset.address">
                 <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                   <div class="flex items-center">
                     <div class="h-10 w-10 flex-shrink-0">
@@ -76,10 +77,10 @@ const { addToken } = useWallet()
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   <div class="text-gray-900">
-                    <a target="_blank" underline :href="`${selectedChain.explorer}/address/${asset.address}`">{{ asset.address }}
+                    <a target="_blank" underline :href="`${selectedListing.explorer}/address/${asset.address}`">{{ asset.address }}
                     </a>
                   </div>
-                  <div cursor-pointer class="text-gray-500" flex items-center gap-8px @click="addToken(asset)">
+                  <div cursor-pointer class="text-gray-500" flex items-center gap-8px @click="addToken(asset, network)">
                     <img v-if="asset.address" :src="metamaskImage" alt="metamask" w-16px>
                     {{ asset.symbol }}
                   </div>
