@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { RadioGroup, RadioGroupDescription, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
+import type { Asset } from '@callisto-enterprise/assetslist'
 import { AssetType, TOKENLIST } from '@callisto-enterprise/assetslist'
 import { CALLISTO_CHAIN_CONSTANTS } from '@callisto-enterprise/chain-constants'
 import metamaskImage from '~/assets/metamask.svg'
@@ -12,6 +13,17 @@ const listingTypes = [
 
 const selectedListing = ref(listingTypes[0])
 const { addToken } = useWallet()
+
+const getPlatforms = (asset: Asset) => (asset.platforms?.map((p) => {
+  if (p === 'hub')
+    return '<a target="_blank" href="https://hub.callisto.network/">Hub</a>'
+  if (p === 'soy')
+    return '<a target="_blank" href="https://bridge.soy.finance/">Soy</a>'
+  if (p === 'bridge')
+    return '<a target="_blank" href="https://bridge.callisto.network/">Bridge</a>'
+
+  return p
+}).join(', ') ?? '---')
 </script>
 
 <template>
@@ -89,9 +101,7 @@ const { addToken } = useWallet()
                   <a v-if="asset.audit.isAudited && asset.audit.reportUrl" target="_blank" :href="asset.audit.reportUrl" class="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">Audited: {{ asset.audit.riskLevel }}</a>
                   <a v-if="asset.audit.isAudited && !asset.audit.reportUrl" target="_blank" :href="asset.audit.reportUrl" class="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">Audited</a>
                 </td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {{ asset.platforms?.join(', ') ?? '---' }}
-                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500" v-html="getPlatforms(asset)" />
               </tr>
             </tbody>
           </table>
