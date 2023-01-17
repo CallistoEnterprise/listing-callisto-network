@@ -16,8 +16,8 @@ const mainnetTokens = TOKENLIST[AssetSupportedChain.Mainnet] // or just 820
 const mainnetNFTs = NFTLIST[AssetSupportedChain.Mainnet]
 
 // Or find any specific asset by address
-const nft = getNFT('0x000...', AssetSupportedChain.Mainnet)
-const token = getToken('0x000...', AssetSupportedChain.Mainnet)
+const nft = getNFT('0x...', AssetSupportedChain.Mainnet)
+const token = getToken('0x...', AssetSupportedChain.Mainnet)
 ```
 
 Here is the structure of the Asset interface
