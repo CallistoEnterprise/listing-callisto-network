@@ -22,3 +22,15 @@ We charge the following for new project listing:
 The list of services will continually expand. If you want to request a higher farm multiplier, a specific service, or tailored support, please write this request in the respective field and we will contact you as soon as possible.
 
 Once we have received your request, our team will begin the audit process and will get back to you within 14 days with the next steps. This could include additional information that we need from you, or an invitation to proceed with the next phase of the listing process. Our goal is to make the listing process as smooth and efficient as possible, while still maintaining the highest level of security for our users.
+
+## Technical Realization
+
+The listing is a streamlined version 2 of Soy Finance's Safelist. It has been designed to be more efficient and user-friendly, making it easier for projects to be listed and for users to access the latest and most accurate information about the projects that are available on our platform.
+
+The technical realization of the listing is a GitHub repository that automatically creates pull requests once a listing request is created. This allows for a more efficient and automated process, making it easier for our team of security experts to review and audit the projects that are being considered for inclusion on the Safelist.
+
+Once the audit is complete and all fields have been checked, the request is merged into the repository. This makes the data in the repository available for anyone to use, providing transparency and accessibility to the entire ecosystem.
+
+For developer documentation and more detailed information about the listing process, head over to <a href="/developers">Readme</a>. Developers and projects can find more detailed information how to access and parse the data in the repository.
+
+Overall, the listing is a streamlined and efficient way to ensure that only the most secure projects are listed on Soy Finance's Safelist, while providing a transparent and accessible way for the entire ecosystem to access the information.
