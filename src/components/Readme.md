@@ -2,19 +2,22 @@
 
 This package contains multi chain asset lists with Tokens and NFTs
 
-> The package is created with TSDX tool
-
 ## How to use
 1. Install the package
-`npm i @callisto-enterprice/assetslist`
+```
+npm i @callisto-enterprice/assetslist
+```
 
 1. Get Token or NFT asset list for each supported chain, e.g.
 ```ts
-import { CALLISTO_CHAIN_ID } from '@callisto-enterprise/chain-constants'
-import { NFTLIST, TOKENLIST } from '@callisto-enterprise/assetslist'
+import { AssetSupportedChain, NFTLIST, TOKENLIST, getNFT, getToken } from '@callisto-enterprise/assetslist'
 
-const mainnetTokens = TOKENLIST[CALLISTO_CHAIN_ID.Mainnet] // or just 820
-const mainnetNFTs = NFTLIST[CALLISTO_CHAIN_ID.Mainnet]
+const mainnetTokens = TOKENLIST[AssetSupportedChain.Mainnet] // or just 820
+const mainnetNFTs = NFTLIST[AssetSupportedChain.Mainnet]
+
+// Or find any specific asset by address
+const nft = getNFT('0x000...', AssetSupportedChain.Mainnet)
+const token = getToken('0x000...', AssetSupportedChain.Mainnet)
 ```
 
 Here is the structure of the Asset interface
@@ -53,28 +56,3 @@ export interface AssetNFT extends Asset {
 > as you can see at the image below
 
 ![NFT placeholder](https://asset.callisto.network/images/nft_placeholder.png)
-
-## Commands
-
-TSDX scaffolds your new library inside `/src`.
-
-To run TSDX, use:
-
-```bash
-yarn start
-```
-
-This builds to `/dist` and runs the project in watch mode so any edits you save inside `src` causes a rebuild to `/dist`.
-
-To do a one-off build, use `npm run build` or `yarn build`.
-
-To run tests, use `npm test` or `yarn test`. If testing misbehaves, run `npx jest --clearCache`.
-
-_Note about DeprecationWarning [DEP0148]: tslib library, referenced by tsdx, has deprecated "./" key in package.json, see discussion in [github](https://github.com/microsoft/tslib/issues/134). No safe fix was identified, manual edit within node_modules can be a temporary solution._
-
-### Rollup
-
-TSDX uses [Rollup](https://rollupjs.org) as a bundler and generates multiple rollup configs for various module formats and build settings. See [Optimizations](#optimizations) for details.
-
-### Contribution
-If you would like to add new Token or NFT collection, or fix some image assets feel free to create a new PR.

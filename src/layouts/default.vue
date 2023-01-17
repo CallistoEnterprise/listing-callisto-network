@@ -4,7 +4,7 @@ import logo from '~/assets/logo.svg'
 const navigation = [
   { name: 'Introduction', href: '/' },
   { name: 'Assets', href: '/assets' },
-  { name: 'CDN', href: '/cdn' },
+  { name: 'Devs', href: '/devs' },
 ]
 </script>
 
