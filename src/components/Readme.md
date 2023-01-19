@@ -3,26 +3,33 @@
 This package contains multi chain asset lists with Tokens and NFTs
 
 ## How to use
+
 1. Install the package
-```
-npm i @callisto-enterprice/assetslist
-```
+   `npm i @callisto-enterprice/assetslist`
 
 1. Get Token or NFT asset list for each supported chain, e.g.
-```ts
-import { AssetSupportedChain, NFTLIST, TOKENLIST, getNFT, getToken } from '@callisto-enterprise/assetslist'
 
-const mainnetTokens = TOKENLIST[AssetSupportedChain.Mainnet] // or just 820
-const mainnetNFTs = NFTLIST[AssetSupportedChain.Mainnet]
+```ts
+import {
+  CallistoAssetSupportedChainId,
+  CallistoNftList,
+  CallistoTokenList,
+  getCallistoNFT,
+  getCallistoToken,
+} from '@callisto-enterprise/assetslist'
+
+const mainnetTokens = CallistoTokenList[CallistoAssetSupportedChainId.Mainnet] // or just 820
+const mainnetNFTs = CallistoNftList[CallistoAssetSupportedChainId.Mainnet]
 
 // Or find any specific asset by address
-const nft = getNFT('0x...', AssetSupportedChain.Mainnet)
-const token = getToken('0x...', AssetSupportedChain.Mainnet)
+const nft = getCallistoNFT('0x...', CallistoAssetSupportedChainId.Mainnet)
+const token = getCallistoToken('0x...', CallistoAssetSupportedChainId.Mainnet)
 ```
 
 Here is the structure of the Asset interface
+
 ```ts
-export interface Asset {
+export interface CallistoAsset {
   address: string
   category: AssetType // NATIVE, ERC20, ERC223, ERC721, ERC1155, CALLISTONFT
   name: string
@@ -40,8 +47,9 @@ export interface Asset {
 ```
 
 Here is the structure of the AssetNFT interface which extends the Asset interface
+
 ```ts
-export interface AssetNFT extends Asset {
+export interface CallistoAssetNFT extends CallistoAsset {
   collectionName: string
   placeholderName?: string // usually when it is undefined, it is filled by Asset.name
   placeholderId?: string // it can be filled by the contract tokenId() during the parsing
