@@ -14,7 +14,7 @@ const navigation = [
       <div class="flex w-full items-center justify-between border-b border-app-darkBlue-800 lg:border-none">
         <div class="flex items-center">
           <RouterLink to="/" py-16px>
-            <img class="darkBlueh-10 w-auto" :src="logo" alt="Logo">
+            <img class="darkBlue h-10 w-auto" :src="logo" alt="Logo">
           </RouterLink>
           <div class="ml-10 hidden space-x-8 lg:block">
             <RouterLink v-for="item in navigation" :key="item.name" v-slot="{ href, isActive, navigate }" :to="item.href" custom>
@@ -38,4 +38,5 @@ const navigation = [
       <RouterView />
     </div>
   </section>
+  <Footer />
 </template>
