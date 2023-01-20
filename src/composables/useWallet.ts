@@ -6,7 +6,7 @@ import type { MetaMaskInpageProvider } from '@metamask/providers'
 // import type WalletConnectProvider from '@walletconnect/web3-provider' //can't resolve import (any is used for SupportedProvider so far)
 // import useLoading from './useLoading'
 import type { ChainConstants } from '@callisto-enterprise/chain-constants/dist/types'
-import type { Asset } from '@callisto-enterprise/assetslist'
+import type { CallistoAsset } from '@callisto-enterprise/assetslist'
 import { nodeProvider } from './web3/nodeProvider'
 import useLoginModal from './useLoginModal'
 
@@ -107,7 +107,7 @@ export default function useWallet() {
                   symbol: chain.general.nativeSymbol,
                   decimals: 18,
                 },
-                rpcUrls: chain.rpcs,
+                rpcUrls: [...chain.rpcs],
                 blockExplorerUrls: [`${chain.explorer.url}`],
               },
             ],
@@ -126,7 +126,7 @@ export default function useWallet() {
 
   const isLogged = computed(() => userAddress.value !== undefined)
 
-  const addToken = async (asset: Asset, network: ChainConstants) => {
+  const addToken = async (asset: CallistoAsset, network: ChainConstants) => {
     const { connect } = useLoginModal()
     if (!isLogged.value)
       await connect()

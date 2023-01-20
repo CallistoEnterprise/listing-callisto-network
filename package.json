@@ -15,8 +15,8 @@
     "up": "taze major -I"
   },
   "dependencies": {
-    "@callisto-enterprise/assetslist": "^1.6.2",
-    "@callisto-enterprise/chain-constants": "^1.0.5",
+    "@callisto-enterprise/assetslist": "^1.8.0",
+    "@callisto-enterprise/chain-constants": "^1.1.0",
     "@headlessui/vue": "^1.7.7",
     "@metamask/providers": "^10.2.1",
     "@netlify/functions": "^1.4.0",

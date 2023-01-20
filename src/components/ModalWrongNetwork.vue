@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { CALLISTO_CHAIN_ID } from '@callisto-enterprise/chain-constants'
 import { CALLISTO_CHAIN_CONSTANTS } from '@callisto-enterprise/chain-constants'
 import useWallet from '~/composables/useWallet'
 
@@ -6,7 +7,7 @@ const { switchNetwork, connectedChain } = useWallet()
 
 const supportedChain = computed(() => {
   const chainId = +import.meta.env.VITE_CHAIN_ID
-  return CALLISTO_CHAIN_CONSTANTS[chainId as keyof typeof CALLISTO_CHAIN_CONSTANTS]
+  return CALLISTO_CHAIN_CONSTANTS[chainId as CALLISTO_CHAIN_ID]
 })
 
 const isOpen = computed(() => !!connectedChain.value && connectedChain.value !== supportedChain.value.general.chainId)

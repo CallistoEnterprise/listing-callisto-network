@@ -2,7 +2,8 @@
 import { CALLISTO_CHAIN_CONSTANTS, CALLISTO_CHAIN_ID } from '@callisto-enterprise/chain-constants'
 import { RadioGroup, RadioGroupDescription, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
 import { Contract, ethers } from 'ethers'
-import { TOKENLIST } from '@callisto-enterprise/assetslist'
+import type { CallistoAssetChainId } from '@callisto-enterprise/assetslist'
+import { CallistoTokenList } from '@callisto-enterprise/assetslist'
 import useLoginModal from '~/composables/useLoginModal'
 import usePriceFeed from '~/composables/usePriceFeed'
 import useWallet from '~/composables/useWallet'
@@ -124,7 +125,7 @@ const sendRequest = async () => {
     return
 
   // check existed address
-  if (TOKENLIST[request.value.chainId as keyof typeof TOKENLIST].map(a => a.address).includes(request.value.address)) {
+  if (CallistoTokenList[request.value.chainId as CallistoAssetChainId].map(a => a.address).includes(request.value.address)) {
     toastError({ heading: 'Form is not valid', content: 'This address is already listed' })
     return
   }

@@ -2,8 +2,8 @@ lockfileVersion: 5.4
 
 specifiers:
   '@antfu/eslint-config': ^0.33.1
-  '@callisto-enterprise/assetslist': ^1.6.2
-  '@callisto-enterprise/chain-constants': ^1.0.5
+  '@callisto-enterprise/assetslist': ^1.8.0
+  '@callisto-enterprise/chain-constants': ^1.1.0
   '@headlessui/vue': ^1.7.7
   '@iconify-json/carbon': ^1.1.11
   '@iconify-json/cib': ^1.1.3
@@ -66,8 +66,8 @@ specifiers:
   web3modal: ^1.9.10
 
 dependencies:
-  '@callisto-enterprise/assetslist': 1.6.2
-  '@callisto-enterprise/chain-constants': 1.0.5
+  '@callisto-enterprise/assetslist': 1.8.0
+  '@callisto-enterprise/chain-constants': 1.1.0
   '@headlessui/vue': 1.7.7_vue@3.2.45
   '@metamask/providers': 10.2.1
   '@netlify/functions': 1.4.0
@@ -634,13 +634,13 @@ packages:
       '@babel/helper-validator-identifier': 7.19.1
       to-fast-properties: 2.0.0
 
-  /@callisto-enterprise/assetslist/1.6.2:
-    resolution: {integrity: sha512-g7dfKFQDQYHcrbIeCalB7FBEMEUZH9VOcZldupnumyXalhjVC8SwRk6XZDVtY36n4RgwTZ4WsA7Z9DHC/BwhNw==}
+  /@callisto-enterprise/assetslist/1.8.0:
+    resolution: {integrity: sha512-ZjDJZGLpVwpBbfJqS/LtxH3O3Q4K32Fs1aWgiOwgMBfkvcuTnrxLYfKamLDIY50eo5wtKNydrIybiKXNdyMmMw==}
     engines: {node: '>=10'}
     dev: false
 
-  /@callisto-enterprise/chain-constants/1.0.5:
-    resolution: {integrity: sha512-D7xPcIIYvScD8oBYPROYjFtm3uKAbmtpsRNgLmxNvU0d4brS31GLOhH7C9RPjWTeE8lDtBItiBDGJXxSAX53zg==}
+  /@callisto-enterprise/chain-constants/1.1.0:
+    resolution: {integrity: sha512-2Xx3n8xVnXUDaVOpgePcogZR88d9PCP0ADwmcakfKgY/Qas9h2SZEiSVBTGU6FWxWA2xGkbOr/xkf4bxdcg3HA==}
     engines: {node: '>=10'}
     dev: false
 

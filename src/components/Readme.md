@@ -11,19 +11,19 @@ This package contains multi chain asset lists with Tokens and NFTs
 
 ```ts
 import {
-  CallistoAssetSupportedChainId,
+  CallistAssetChainId,
   CallistoNftList,
   CallistoTokenList,
   getCallistoNFT,
   getCallistoToken,
 } from '@callisto-enterprise/assetslist'
 
-const mainnetTokens = CallistoTokenList[CallistoAssetSupportedChainId.Mainnet] // or just 820
-const mainnetNFTs = CallistoNftList[CallistoAssetSupportedChainId.Mainnet]
+const mainnetTokens = CallistoTokenList[CallistAssetChainId.Mainnet] // or just 820
+const mainnetNFTs = CallistoNftList[CallistAssetChainId.Mainnet]
 
 // Or find any specific asset by address
-const nft = getCallistoNFT('0x...', CallistoAssetSupportedChainId.Mainnet)
-const token = getCallistoToken('0x...', CallistoAssetSupportedChainId.Mainnet)
+const nft = getCallistoNFT('0x...', CallistAssetChainId.Mainnet)
+const token = getCallistoToken('0x...', CallistAssetChainId.Mainnet)
 ```
 
 Here is the structure of the Asset interface

@@ -15,6 +15,7 @@ export default defineConfig({
     { 'app-container-center': 'container mx-auto px-12px md:px-24px lg:px-56px' },
     { 'app-container': 'container mx-auto px-24px md:px-48px lg:px-72px' },
     { 'app-h1': 'text-2xl md:text-3xl font-bold leading-tight text-gray-900' },
+    { 'app-h2': 'text-xl md:text-2xl font-bold leading-tight text-gray-600' },
     { 'app-section': 'py-32px md:pb-64px' },
   ],
   presets: [
