@@ -4,7 +4,7 @@ import { CALLISTO_CHAIN_CONSTANTS, CALLISTO_CHAIN_ID } from '@callisto-enterpris
 
 <template>
   <div>
-    <TableAssets :chain="CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.Mainnet]" />
+    <TableAssets style="overflow: auto !important" :chain="CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.Mainnet]" />
   </div>
 </template>
 
