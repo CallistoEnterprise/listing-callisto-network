@@ -1,16 +1,39 @@
 <script lang="ts" setup>
 import { CALLISTO_CHAIN_CONSTANTS, CALLISTO_CHAIN_ID } from '@callisto-enterprise/chain-constants'
 import { RadioGroup, RadioGroupDescription, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
+import { Contract, ethers } from 'ethers'
+import type { CallistoAssetChainId } from '@callisto-enterprise/assetslist'
+import { CallistoTokenList } from '@callisto-enterprise/assetslist'
 import useLoginModal from '~/composables/useLoginModal'
+import usePriceFeed from '~/composables/usePriceFeed'
 import useWallet from '~/composables/useWallet'
 import type { FormRequest } from '~/models/FormRequest'
 import type { OptionItem } from '~/models/OptionItem'
+import erc20Abi from '~/contracts/abi/erc20.json'
+import useTransactions from '~/composables/web3/useTransactions'
+import useNotifications from '~/composables/useNotifications'
+import { createBase64Image, isFormValid } from '~/utils/utils'
 
-const requestTypes = [
-  { name: 'Token Asset', price: 1000, soy: '104,189' },
-]
+const { addressValidator, minLengthValidator, emailValidator, maxLengthValidator } = useValidators()
+const { isLogged, userAddress, signer } = useWallet()
+const { connect } = useLoginModal()
+const { soyPrice } = usePriceFeed()
+const { sendTransaction } = useTransactions()
+const { toastSuccessTx, toastError, toastSuccess, toastPending, dismissNotification } = useNotifications()
 
-const selectedRequestType = ref(requestTypes[0])
+onMounted(() => {
+  if (!isLogged.value)
+    connect()
+})
+
+const requestTypes = computed(() => [
+  { name: 'Token Asset', price: 1000, soy: soyPrice.value ? (1000 / soyPrice.value).toFixed(0) : '---' },
+])
+
+const selectedRequestType = ref()
+watch(requestTypes, () => selectedRequestType.value = requestTypes.value[0], { immediate: true })
+
+const request = ref({} as FormRequest)
 
 const mainnet = CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.Mainnet]
 const etc = CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.ETC]
@@ -33,16 +56,129 @@ const chainOptions: Array<OptionItem> = [
     image: btt.general.image,
   },
 ]
-const request = ref({} as FormRequest)
+
+const farmTokenOptions: Array<OptionItem> = [
+  {
+    label: 'CLO',
+    value: 'CLO',
+    image: 'https://asset.callisto.network/images/coins/clo.png',
+  },
+  {
+    label: 'SOY',
+    value: 'SOY',
+    image: 'https://asset.callisto.network/images/coins/soy.png',
+  },
+  {
+    label: 'BUSDT',
+    value: 'BUSDT',
+    image: 'https://asset.callisto.network/images/coins/busdt.png',
+  },
+]
+
+const fieldName = ref()
+const fieldSymbol = ref()
+const fieldAddress = ref()
+const fieldChain = ref()
+const fieldAbout = ref()
+const fieldWebsite = ref()
+const fieldEmail = ref()
+const fieldIcon = ref<HTMLInputElement>()
+
+const isMainnet = computed(() => import.meta.env.VITE_SOY_CHAIN_ID === 820)
 
 const isChainCallisto = computed(() => request.value.chainId === CALLISTO_CHAIN_ID.Mainnet)
 
-const { addressValidator, minLengthValidator, emailValidator } = useValidators()
-const { isLogged, userAddress } = useWallet()
-const { connect } = useLoginModal()
+const finalPrice = computed(() => isMainnet.value ? ((2000 + (request.value.createFarm ? 250 : 0)) / soyPrice.value).toFixed(0) : '1')
+
+const onFileSelected = async (event: any) => {
+  const files: any[] = event.target.files || event.dataTransfer.files
+  if (!files.length)
+    return
+  // convert icon to base64
+  request.value.icon = await createBase64Image(files[0])
+}
+
+const sendTx = async () => {
+  const soyAddr = isMainnet.value ? import.meta.env.VITE_SOY_ADDR : '0x4c20231BCc5dB8D805DB9197C84c8BA8287CbA92'
+  const contract = new Contract(soyAddr, erc20Abi, signer.value!)
+  const amount = finalPrice.value
+
+  const destination = isMainnet.value ? import.meta.env.VITE_SOY_MULTISIG : userAddress.value
+  const receipt = await sendTransaction(contract.transfer(destination, ethers.utils.parseUnits(`${amount}`, 18)), 'Preparing payment...')
+  if (!receipt)
+    return null
+
+  if (receipt?.status === 1) {
+    toastSuccessTx({
+      heading: 'Transaction success',
+      content: 'Payment has been succesfull',
+    }, receipt.transactionHash)
+  }
+
+  return receipt
+}
+
+const sendRequest = async () => {
+  if (!isFormValid([
+    fieldName, fieldSymbol, fieldAddress, fieldChain, fieldAbout, fieldWebsite, fieldEmail,
+  ]))
+    return
+
+  // check existed address
+  if (CallistoTokenList[request.value.chainId as CallistoAssetChainId].map(a => a.address).includes(request.value.address)) {
+    toastError({ heading: 'Form is not valid', content: 'This address is already listed' })
+    return
+  }
+
+  const url = '/.netlify/functions/send-request'
+
+  // Test server validation
+  let toastId = toastPending({
+    heading: 'Preparing your request',
+    content: 'Validating the data...',
+  })
+  const { data: validationData, statusCode: validationStatus } = await useFetch(url).post({ ...request.value, vlidationOnly: true } as FormRequest).json()
+  if (validationStatus.value !== 200) {
+    if (validationData.value.error)
+      toastError({ heading: 'Form is not valid', content: validationData.value.error, replaceID: toastId })
+    else toastError({ heading: 'Form is not valid', content: 'Unhandled exception', replaceID: toastId })
+    return
+  }
+
+  dismissNotification(toastId)
+
+  // Proceed payment
+  const txReceipt = await sendTx()
+  if (!txReceipt)
+    return
+
+  request.value.payment = {
+    destination: import.meta.env.VITE_SOY_MULTISIG,
+    price: finalPrice.value,
+    soyPrice: soyPrice.value,
+    txHash: txReceipt.transactionHash,
+  }
+
+  // Sent request
+  toastId = toastPending({
+    heading: 'Sending your request',
+    content: 'Please be patient...',
+  })
+
+  const { data, statusCode } = await useFetch(url).post(request.value).json()
+  if (statusCode.value === 200) {
+    toastSuccess({ heading: 'Success!', content: 'Your request has been sent. We will contact you within 14 days.', replaceID: toastId })
+  }
+  else {
+    if (data.value.error)
+      toastError({ heading: 'Request Failed', content: data.value.error, replaceID: toastId })
+    else toastError({ heading: 'Request Failed', content: 'The request failed. Please copy the transcript of the form and contact support with the data', replaceID: toastId })
+  }
+}
 </script>
 
 <template>
+  <ModalWrongNetwork />
   <div>
     <div flex flex-col items-center>
       <h1 app-h1>
@@ -81,35 +217,45 @@ const { connect } = useLoginModal()
         </div>
         <div grid grid-cols-1 sm:grid-cols-3 gap-4>
           <BaseInput
+            ref="fieldName"
             v-model:value="request.name" col-span-1
             sm:col-span-2 type="text" w-full label="Name of the Token" required
           />
           <BaseInput
+            ref="fieldSymbol"
             v-model:value="request.symbol" col-span-1
             type="text" w-full label="Symbol of the token"
-            required :validators="[minLengthValidator(2)]"
+            required :validators="[minLengthValidator(2), maxLengthValidator(8)]"
           />
         </div>
 
         <div grid grid-cols-1 sm:grid-cols-3 gap-4>
+          <BaseSelect ref="fieldChain" v-model:value="request.chainId" col-span-1 label="Chain" w-full :options="chainOptions" required />
           <BaseInput
+            ref="fieldAddress"
             v-model:value="request.address" col-span-1
             sm:col-span-2 type="text" w-full label="Contract address" required :validators="[addressValidator()]"
           />
-          <BaseSelect v-model:value="request.chainId" col-span-1 label="Chain" w-full :options="chainOptions" required />
         </div>
 
         <div class="sm:col-span-6">
-          <label for="cover-photo" class="block text-sm font-medium text-gray-700">Token icon</label>
-          <div class="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
-            <div class="space-y-1 text-center">
+          <label for="cover-photo" class="block text-sm font-medium text-gray-700">Token icon *</label>
+          <div
+            class="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6" @dragover.prevent
+            @drop.prevent="onFileSelected"
+          >
+            <div v-if="request.icon" flex flex-col items-center gap-12px>
+              <img w-64px h-64px :src="request.icon">
+              <span text-sm text-gray-600 cursor-pointer @click="request.icon = ''">Remove icon</span>
+            </div>
+            <div v-else class="space-y-1 text-center">
               <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                 <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
               <div class="flex text-sm text-gray-600">
                 <label for="file-upload" class="relative cursor-pointer rounded-md bg-white font-medium text-app-blue focus-within:outline-none focus-within:ring-2 focus-within:ring-app-blue focus-within:ring-offset-2 hover:text-app-blue">
                   <span>Upload an icon</span>
-                  <input id="file-upload" name="file-upload" type="file" class="sr-only">
+                  <input id="file-upload" ref="fieldIcon" name="file-upload" type="file" class="sr-only" @change="onFileSelected">
                 </label>
                 <p class="pl-1">
                   or drag and drop
@@ -133,19 +279,19 @@ const { connect } = useLoginModal()
         </div>
 
         <div>
-          <BaseTextarea v-model:value="request.about" label="About" type="text" required :validators="[minLengthValidator(120)]" />
+          <BaseTextarea ref="fieldAbout" v-model:value="request.about" label="About" type="text" required :validators="[minLengthValidator(120, request.about?.length)]" />
           <p class="mt-2 text-sm text-gray-500">
-            Write a few sentences about yourself.
+            Write a few sentences about yourself, your project, your additional requirements, etc
           </p>
         </div>
 
-        <BaseInput v-model:value="request.website" type="text" label="Project website" placeholder="www.example.com" w-full required>
+        <BaseInput ref="fieldWebsite" v-model:value="request.website" type="text" label="Project website" placeholder="www.example.com" w-full required>
           <template #prefix>
             https://
           </template>
         </BaseInput>
 
-        <BaseInput v-model:value="request.email" type="email" label="Email address" placeholder="john@doe.co" w-full required :validators="[emailValidator()]" />
+        <BaseInput ref="fieldEmail" v-model:value="request.email" type="email" label="Email address" placeholder="john@doe.co" w-full required :validators="[emailValidator()]" />
 
         <div grid grid-cols-1 sm:grid-cols-2 gap-4>
           <BaseInput
@@ -194,7 +340,11 @@ const { connect } = useLoginModal()
           </div>
           <div class="space-y-5" pt-16px>
             <BaseCheckbox :value="true" label="Security Audit (+ $1 000)" description="Security Audit is necessary in order to list your token" />
-            <BaseCheckbox v-model:value="request.createFarm" label="Create farm on SOY.Finance (starting at $250)" description="The price is based on the multiplier" />
+            <BaseCheckbox v-model:value="request.createFarm" label="Create farm on SOY.Finance (+ $250)" description="We will create a farm for you, you can specify the pair token" />
+            <div v-if="request.createFarm" flex ml-22px>
+              <BaseSelect v-model:value="request.farmToken" w-160px label="Farm pair token" :options="farmTokenOptions" required />
+            </div>
+            <div flex />
           </div>
         </div>
       </div>
@@ -205,8 +355,8 @@ const { connect } = useLoginModal()
             <span text-black text-sm>{{ userAddress }}</span>
           </template>
         </div>
-        <button v-if="isLogged" type="button" w-auto app-btn>
-          Pay 208,387 SOY and Send Request
+        <button v-if="isLogged" type="button" w-auto app-btn @click="sendRequest()">
+          Pay {{ finalPrice }} SOY and Send Request
         </button>
         <button v-else app-btn w-auto type="button" @click="connect()">
           Connect wallet

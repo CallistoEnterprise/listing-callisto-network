@@ -60,6 +60,7 @@ export default function useLoginModal() {
     const instance = await web3Modal.value.connect()
     // const provider = new ethers.providers.Web3Provider(instance)
     setWalletProvider(instance)
+    await promiseTimeout(100)
   }
 
   const autologin = async () => {

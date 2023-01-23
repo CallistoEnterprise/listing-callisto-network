@@ -15,6 +15,7 @@ export default defineConfig({
     { 'app-container-center': 'container mx-auto px-12px md:px-24px lg:px-56px' },
     { 'app-container': 'container mx-auto px-24px md:px-48px lg:px-72px' },
     { 'app-h1': 'text-2xl md:text-3xl font-bold leading-tight text-gray-900' },
+    { 'app-h2': 'text-xl md:text-2xl font-bold leading-tight text-gray-600' },
     { 'app-section': 'py-32px md:pb-64px' },
   ],
   presets: [
@@ -37,7 +38,7 @@ export default defineConfig({
     transformerDirectives(),
     transformerVariantGroup(),
   ],
-  safelist: 'prose prose-sm m-auto text-left'.split(' '),
+  safelist: 'prose prose-sm m-auto text-left md:w-400px md:w-720px md:w-920px md:w-1020px'.split(' '),
   theme: {
     colors: {
       app: {

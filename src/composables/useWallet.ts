@@ -5,6 +5,8 @@ import type { Web3Provider } from '@ethersproject/providers'
 import type { MetaMaskInpageProvider } from '@metamask/providers'
 // import type WalletConnectProvider from '@walletconnect/web3-provider' //can't resolve import (any is used for SupportedProvider so far)
 // import useLoading from './useLoading'
+import type { ChainConstants } from '@callisto-enterprise/chain-constants/dist/types'
+import type { CallistoAsset } from '@callisto-enterprise/assetslist'
 import { nodeProvider } from './web3/nodeProvider'
 import useLoginModal from './useLoginModal'
 
@@ -82,7 +84,71 @@ watch(walletProvider, async (provider, oldProvider) => {
 })
 
 export default function useWallet() {
+  const switchNetwork = async (chain: ChainConstants): Promise<boolean> => {
+    try {
+      await rawWalletProvider.value?.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: chain.general.hexChainId }],
+      })
+
+      return true
+    }
+    catch (error: any) {
+      if (error.code === 4902 || error.code === -32603) {
+        try {
+          await rawWalletProvider.value?.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId: chain.general.hexChainId,
+                chainName: chain.general.officialName,
+                nativeCurrency: {
+                  name: chain.general.officialName,
+                  symbol: chain.general.nativeSymbol,
+                  decimals: 18,
+                },
+                rpcUrls: [...chain.rpcs],
+                blockExplorerUrls: [`${chain.explorer.url}`],
+              },
+            ],
+          })
+
+          return true
+        }
+        catch (err) {
+          console.error('Can\'t switch network on metamask because window.ethereum is undefined')
+        }
+      }
+    }
+
+    return false
+  }
+
   const isLogged = computed(() => userAddress.value !== undefined)
+
+  const addToken = async (asset: CallistoAsset, network: ChainConstants) => {
+    const { connect } = useLoginModal()
+    if (!isLogged.value)
+      await connect()
+
+    if (connectedChain.value === network.general.chainId) {
+      await rawWalletProvider.value?.request({
+        method: 'wallet_watchAsset',
+        params: {
+          type: 'ERC20',
+          options: {
+            address: asset.address,
+            symbol: asset.symbol,
+            decimals: asset.decimals,
+            image: asset.image,
+          },
+        },
+      })
+    }
+    else {
+      switchNetwork(network)
+    }
+  }
 
   return {
     walletProvider: readonly(walletProvider),
@@ -94,5 +160,7 @@ export default function useWallet() {
     isLogged,
     setWalletProvider,
     disconnectWallet,
+    switchNetwork,
+    addToken,
   }
 }

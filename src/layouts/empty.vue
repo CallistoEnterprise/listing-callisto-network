@@ -3,6 +3,6 @@
 
 <template>
   <div>
-    <Home />
+    <RouterView />
   </div>
 </template>

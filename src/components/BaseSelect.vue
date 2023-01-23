@@ -57,7 +57,7 @@ defineExpose({ validate, isValid, clearError })
 <template>
   <div>
     <label v-if="label" block text-sm font-medium text-gray-700 :class="{ 'text-red-500': errMessage }" mb-4px>
-      {{ label }}{{ required ? '*' : '' }}
+      {{ label }}{{ required ? ' *' : '' }}
     </label>
 
     <div min-h-38px flex>
