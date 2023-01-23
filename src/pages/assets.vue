@@ -8,7 +8,17 @@ import metamaskImage from '~/assets/metamask.svg'
 const listingTypes = [
   { name: 'Mainnet Listing', networks: [CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.Mainnet]], explorer: 'https://explorer.callisto.network', image: 'https://asset.callisto.network/images/chains/820.png' },
   // { name: 'Testnet Listing', assets: TOKENLIST[20729], explorer: 'https://testnet-explorer.callisto.network', image: 'https://asset.callisto.network/images/chains/20729.png' },
-  { name: 'Other chains', networks: [CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.ETH], CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.BSC]], image: 'https://asset.callisto.network/images/chains/61.png', secondaryImage: 'https://asset.callisto.network/images/chains/199.png' },
+  {
+    name: 'Other chains',
+    networks: [
+      CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.ETH],
+      CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.ETC],
+      CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.BSC],
+      CALLISTO_CHAIN_CONSTANTS[CALLISTO_CHAIN_ID.BTT],
+    ],
+    image: 'https://asset.callisto.network/images/chains/61.png',
+    secondaryImage: 'https://asset.callisto.network/images/chains/199.png',
+  },
 ]
 
 const selectedListing = ref(listingTypes[0])
