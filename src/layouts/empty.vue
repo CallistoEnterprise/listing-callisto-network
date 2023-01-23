@@ -3,6 +3,6 @@
 
 <template>
   <div>
-    CDN
+    <RouterView />
   </div>
 </template>

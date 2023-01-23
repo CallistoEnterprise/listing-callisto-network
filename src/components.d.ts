@@ -19,6 +19,7 @@ declare module '@vue/runtime-core' {
     Readme: typeof import('./components/Readme.md')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TableAssets: typeof import('./components/TableAssets.vue')['default']
     TokenImage: typeof import('./components/TokenImage.vue')['default']
   }
 }
