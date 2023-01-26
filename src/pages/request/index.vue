@@ -25,9 +25,6 @@ const {
   sendTx,
 } = useRequest()
 
-const LISTING_PRICE = import.meta.env.VITE_LISTING_PRICE
-const AUDIT_PRICE = import.meta.env.VITE_AUDIT_PRICE
-
 onMounted(() => {
   if (!isLogged.value)
     connect()
@@ -38,9 +35,9 @@ const requestTypes = computed(() => [
 ])
 
 const auditOptions = computed(() => [
-  { name: 'Token Audit', price: AUDIT_PRICE, value: SecurityAudit.Audit, soy: soyPrice.value ? (AUDIT_PRICE / soyPrice.value).toFixed(0) : '---' },
-  { name: 'Already have Audit', price: 0, value: SecurityAudit.Audited, soy: '0' },
-  { name: 'Don\'t need Audit', price: 0, value: SecurityAudit.NoAudit, soy: '0' },
+  { name: 'Token Audit', price: AUDIT_PRICE, value: SecurityAudit.Audit, soy: soyPrice.value ? (AUDIT_PRICE / soyPrice.value).toFixed(0) : '---', description: 'The audit includes the Token Smart Contract audit, which is also required to list the token on Soy.Finance and Soy Bridge' },
+  { name: 'Already have Audit', price: 0, value: SecurityAudit.Audited, soy: '0', description: 'If you have already performed an Audit, you will be prompted to provide us with the URL of the Security Audit.' },
+  { name: 'Don\'t need Audit', price: 0, value: SecurityAudit.NoAudit, soy: '0', description: 'If you don\'t want an Audit, the Token can only be listed on the Callisto HUB. This option is strongly discouraged' },
 ])
 
 watch(requestTypes, () => selectedRequestType.value = requestTypes.value[0], { immediate: true })
@@ -51,16 +48,16 @@ const chainOptions = computed(() => [CALLISTO_CHAIN_ID.Mainnet, CALLISTO_CHAIN_I
   image: CALLISTO_CHAIN_CONSTANTS[id].general.image,
 })))
 
-const farmTokenOptions = computed(() => ['clo', 'soy', 'busdt'].map<OptionItem>(symbol => ({
-  label: symbol.toUpperCase(),
-  value: symbol.toUpperCase(),
-  image: `https://asset.callisto.network/images/coins/${symbol}.png`,
-})))
+// const farmTokenOptions = computed(() => ['clo', 'soy', 'busdt'].map<OptionItem>(symbol => ({
+//   label: symbol.toUpperCase(),
+//   value: symbol.toUpperCase(),
+//   image: `https://asset.callisto.network/images/coins/${symbol}.png`,
+// })))
 
-const farmDurationOptions = computed(() => Array(12).fill(0).map((_, i) => ({
-  label: `${i + 1} month${i > 0 ? 's' : ''}`,
-  value: i + 1,
-})))
+// const farmDurationOptions = computed(() => Array(12).fill(0).map((_, i) => ({
+//   label: `${i + 1} month${i > 0 ? 's' : ''}`,
+//   value: i + 1,
+// })))
 
 const fieldName = ref()
 const fieldSymbol = ref()
@@ -299,6 +296,20 @@ const sendRequest = async () => {
             Security Audit
           </div>
           <div pt-16px space-y-5>
+            <div v-for="option in auditOptions" :key="option.value" class="relative flex items-start" @click="request.securityAudit = option.value">
+              <div class="flex h-5 items-center">
+                <input :id="option.value" :aria-describedby="`${option.value}-description`" name="plan" type="radio" :checked="option.value === request.securityAudit" class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500">
+              </div>
+              <div class="ml-3 text-sm">
+                <label :for="option.value" class="font-medium text-gray-700" cursor-pointer>{{ option.name }} (+ ${{ option.price }})</label>
+                <p :id="`${option.value}-description`" cursor-pointer class="text-gray-500">
+                  {{ option.description }}
+                </p>
+              </div>
+            </div>
+            <BaseInput v-if="request.securityAudit === SecurityAudit.Audited" ref="fieldAuditUrl" v-model:value="request.securityAuditUrl" type="text" label="Security Audit Report URL" placeholder="Provide Us Your Audit Report" w-360px required />
+          </div>
+          <!-- <div pt-16px space-y-5>
             <RadioGroup v-model="request.securityAudit">
               <div grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-y-6 sm:gap-x-4>
                 <RadioGroupOption v-for="option in auditOptions" :key="option.name" v-slot="{ checked, active }" as="template" :value="option.value">
@@ -309,7 +320,7 @@ const sendRequest = async () => {
                       </span>
                     </span>
                     <RadioGroupDescription as="span" class="mt-2 flex text-sm sm:mt-0 sm:ml-4 sm:flex-col sm:text-right">
-                      <span class="font-medium text-gray-900">${{ option.price }}</span>
+                      <span class="font-medium text-gray-900">+ ${{ option.price }}</span>
                       <span class="ml-1 text-gray-500 sm:ml-0">{{ option.soy }} SOY</span>
                     </RadioGroupDescription>
                     <span class="pointer-events-none absolute -inset-px rounded-lg" :class="[active ? 'border' : 'border-2', checked ? 'border-app-blue' : 'border-transparent']" aria-hidden="true" />
@@ -320,16 +331,14 @@ const sendRequest = async () => {
             <div v-if="request.securityAudit === SecurityAudit.Audited" flex>
               <BaseInput ref="fieldAuditUrl" v-model:value="request.securityAuditUrl" type="text" label="Security Audit Report URL" placeholder="Provide Us Your Audit Report" w-360px required />
             </div>
-          </div>
+          </div> -->
         </div>
 
-        <div>
+        <!-- <div>
           <div font-medium text-base>
             Farm on Soy.Finance
           </div>
           <div pt-16px>
-            <!-- <BaseCheckbox v-model:value="request.securityAudit" label="Security Audit (+ $1 000)" description="Security Audit includes on" /> -->
-
             <SecurityAuditRequired>
               <BaseCheckbox v-model:value="request.createFarm" label="Create farm on SOY.Finance (+ $250)" description="We will create a farm for you, you can specify the pair token" />
               <div v-if="request.createFarm" flex gap-16px ml-22px mt-5>
@@ -339,7 +348,7 @@ const sendRequest = async () => {
               </div>
             </SecurityAuditRequired>
           </div>
-        </div>
+        </div> -->
 
         <div>
           <div font-medium text-base>
@@ -347,9 +356,11 @@ const sendRequest = async () => {
           </div>
           <div class="space-y-5" pt-16px>
             <BaseCheckbox v-if="isChainCallisto" v-model:value="request.includeHub" label="Callisto HUB (beta)" description="https://hub.callisto.network" />
-            <BaseCheckbox v-model:value="request.includeBridge" label="Bridge (required wrapped version ERC223 of the token)" description="https://bridge.callisto.network" />
             <SecurityAuditRequired>
-              <BaseCheckbox v-model:value="request.includeSoy" label="Callisto SOY finance" description="https://soy.finance" />
+              <BaseCheckbox v-model:value="request.includeBridge" label="Bridge (required wrapped version of the token)" description="https://bridge.callisto.network" />
+            </SecurityAuditRequired>
+            <SecurityAuditRequired>
+              <BaseCheckbox v-model:value="request.includeSoy" label="SOY finance" description="https://soy.finance" />
             </SecurityAuditRequired>
           </div>
         </div>

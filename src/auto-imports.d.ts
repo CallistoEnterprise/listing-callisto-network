@@ -8,7 +8,9 @@ declare global {
   const $ref: typeof import('vue/macros')['$ref']
   const $shallowRef: typeof import('vue/macros')['$shallowRef']
   const $toRef: typeof import('vue/macros')['$toRef']
+  const AUDIT_PRICE: typeof import('./composables/useRequest')['AUDIT_PRICE']
   const EffectScope: typeof import('vue')['EffectScope']
+  const LISTING_PRICE: typeof import('./composables/useRequest')['LISTING_PRICE']
   const NotificationVariant: typeof import('./composables/useNotifications')['NotificationVariant']
   const SecurityAudit: typeof import('./composables/useRequest')['SecurityAudit']
   const asyncComputed: typeof import('@vueuse/core')['asyncComputed']
@@ -291,7 +293,9 @@ declare module 'vue' {
     readonly $ref: UnwrapRef<typeof import('vue/macros')['$ref']>
     readonly $shallowRef: UnwrapRef<typeof import('vue/macros')['$shallowRef']>
     readonly $toRef: UnwrapRef<typeof import('vue/macros')['$toRef']>
+    readonly AUDIT_PRICE: UnwrapRef<typeof import('./composables/useRequest')['AUDIT_PRICE']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly LISTING_PRICE: UnwrapRef<typeof import('./composables/useRequest')['LISTING_PRICE']>
     readonly NotificationVariant: UnwrapRef<typeof import('./composables/useNotifications')['NotificationVariant']>
     readonly SecurityAudit: UnwrapRef<typeof import('./composables/useRequest')['SecurityAudit']>
     readonly asyncComputed: UnwrapRef<typeof import('@vueuse/core')['asyncComputed']>

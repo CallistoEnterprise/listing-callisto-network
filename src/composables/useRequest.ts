@@ -10,8 +10,20 @@ export enum SecurityAudit {
   NoAudit = 'no-audit',
 }
 
+export const LISTING_PRICE = import.meta.env.VITE_LISTING_PRICE
+export const AUDIT_PRICE = import.meta.env.VITE_AUDIT_PRICE
+
 const request = ref({ securityAudit: SecurityAudit.Audit } as FormRequest)
 const selectedRequestType = ref()
+
+watchEffect(() => {
+  if (request.value.securityAudit === SecurityAudit.NoAudit) {
+    if (request.value.includeSoy)
+      request.value.includeSoy = false
+    if (request.value.includeBridge)
+      request.value.includeBridge = false
+  }
+})
 
 export default function useRequest() {
   const { sendTransaction } = useTransactions()
@@ -19,9 +31,9 @@ export default function useRequest() {
   const { userAddress, signer } = useWallet()
   const { soyPrice } = usePriceFeed()
 
-  const isMainnet = computed(() => import.meta.env.VITE_SOY_CHAIN_ID === 820)
+  const isMainnet = computed(() => import.meta.env.VITE_CHAIN_ID === '820')
   const isChainCallisto = computed(() => request.value.chainId === CALLISTO_CHAIN_ID.Mainnet)
-  const finalPrice = computed(() => isMainnet.value ? ((2000 + (request.value.createFarm ? 250 : 0)) / soyPrice.value).toFixed(0) : '1')
+  const finalPrice = computed(() => isMainnet.value ? ((+LISTING_PRICE + (request.value.securityAudit === SecurityAudit.Audit ? +AUDIT_PRICE : 0)) / soyPrice.value).toFixed(0) : '1')
   const isSoyDisabled = computed(() => request.value.securityAudit === SecurityAudit.NoAudit)
 
   const sendTx = async () => {
