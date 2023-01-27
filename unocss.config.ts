@@ -38,7 +38,7 @@ export default defineConfig({
     transformerDirectives(),
     transformerVariantGroup(),
   ],
-  safelist: 'prose prose-sm m-auto text-left md:w-400px md:w-720px md:w-920px md:w-1020px'.split(' '),
+  safelist: 'prose prose-sm m-auto text-left md:w-400px md:w-720px md:w-920px md:w-1020px bg-audit-safe bg-audit-low bg-audit-medium bg-audit-high bg-audit-critical'.split(' '),
   theme: {
     colors: {
       app: {
@@ -52,6 +52,13 @@ export default defineConfig({
         black: '#000000',
         gray: '##E5E7EB',
         greyStroke: ' #E0E0E0',
+      },
+      audit: {
+        safe: '#0b942b',
+        low: '#43c861',
+        medium: '#ef801a',
+        high: '#c22821',
+        critical: '#680702',
       },
     },
   },

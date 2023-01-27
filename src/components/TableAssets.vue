@@ -70,8 +70,8 @@ const getPlatforms = (asset: CallistoAsset) => (asset.platforms?.map((p) => {
           </td>
           <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
             <div flex flex-col gap-8px items-start>
-              <div v-if="asset.audit.isAudited" class="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
-                Audited{{ asset.audit?.riskLevel ? `: ${asset.audit?.riskLevel}` : '' }}
+              <div v-if="asset.audit.isAudited" class="inline-flex rounded-full px-2 text-xs font-semibold leading-5" :class="[asset.audit.riskLevel ? `bg-audit-${asset.audit.riskLevel?.toLowerCase()}` : 'bg-green-100', `text-${asset.audit.riskLevel ? 'white' : 'green-800'}`]">
+                Audited{{ asset.audit?.riskLevel ? `: ${asset.audit?.riskLevel} Risk` : '' }}
               </div>
               <a v-if="asset.audit.reportUrl" hover:underline flex ml-6px gap-2px text-gray text-xs target="_blank" :href="asset.audit.reportUrl">Open Report <div i-heroicons-outline-arrow-top-right-on-square /></a>
             </div>

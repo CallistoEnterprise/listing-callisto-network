@@ -64,8 +64,8 @@ const handler: Handler = async (event: HandlerEvent) => {
   
   ### Listing details
   - **platforms**: ${request.includeHub ? 'HUB, ' : ''}${request.includeSoy ? 'SOY, ' : ''} ${request.includeBridge ? 'BRIDGE, ' : ''}
-  - **audit**: ${request.securityAudit ? 'YES' : 'NO'}
-  - **farm**: ${request.createFarm ? `YES (pair with ${request.farmToken})` : 'NO'}
+  - **audit**: ${request.securityAudit}
+  - **audit URL**: ${request.securityAuditUrl}
   
   ### Payment details
   - **address**: ${request.address}
