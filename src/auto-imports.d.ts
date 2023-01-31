@@ -8,8 +8,11 @@ declare global {
   const $ref: typeof import('vue/macros')['$ref']
   const $shallowRef: typeof import('vue/macros')['$shallowRef']
   const $toRef: typeof import('vue/macros')['$toRef']
+  const AUDIT_PRICE: typeof import('./composables/useRequest')['AUDIT_PRICE']
   const EffectScope: typeof import('vue')['EffectScope']
+  const LISTING_PRICE: typeof import('./composables/useRequest')['LISTING_PRICE']
   const NotificationVariant: typeof import('./composables/useNotifications')['NotificationVariant']
+  const SecurityAudit: typeof import('./composables/useRequest')['SecurityAudit']
   const asyncComputed: typeof import('@vueuse/core')['asyncComputed']
   const autoResetRef: typeof import('@vueuse/core')['autoResetRef']
   const computed: typeof import('vue')['computed']
@@ -210,6 +213,7 @@ declare global {
   const usePriceFeed: typeof import('./composables/usePriceFeed')['default']
   const useRafFn: typeof import('@vueuse/core')['useRafFn']
   const useRefHistory: typeof import('@vueuse/core')['useRefHistory']
+  const useRequest: typeof import('./composables/useRequest')['default']
   const useResizeObserver: typeof import('@vueuse/core')['useResizeObserver']
   const useRoute: typeof import('vue-router')['useRoute']
   const useRouter: typeof import('vue-router')['useRouter']
@@ -289,8 +293,11 @@ declare module 'vue' {
     readonly $ref: UnwrapRef<typeof import('vue/macros')['$ref']>
     readonly $shallowRef: UnwrapRef<typeof import('vue/macros')['$shallowRef']>
     readonly $toRef: UnwrapRef<typeof import('vue/macros')['$toRef']>
+    readonly AUDIT_PRICE: UnwrapRef<typeof import('./composables/useRequest')['AUDIT_PRICE']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly LISTING_PRICE: UnwrapRef<typeof import('./composables/useRequest')['LISTING_PRICE']>
     readonly NotificationVariant: UnwrapRef<typeof import('./composables/useNotifications')['NotificationVariant']>
+    readonly SecurityAudit: UnwrapRef<typeof import('./composables/useRequest')['SecurityAudit']>
     readonly asyncComputed: UnwrapRef<typeof import('@vueuse/core')['asyncComputed']>
     readonly autoResetRef: UnwrapRef<typeof import('@vueuse/core')['autoResetRef']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
@@ -491,6 +498,7 @@ declare module 'vue' {
     readonly usePriceFeed: UnwrapRef<typeof import('./composables/usePriceFeed')['default']>
     readonly useRafFn: UnwrapRef<typeof import('@vueuse/core')['useRafFn']>
     readonly useRefHistory: UnwrapRef<typeof import('@vueuse/core')['useRefHistory']>
+    readonly useRequest: UnwrapRef<typeof import('./composables/useRequest')['default']>
     readonly useResizeObserver: UnwrapRef<typeof import('@vueuse/core')['useResizeObserver']>
     readonly useRoute: UnwrapRef<typeof import('vue-router')['useRoute']>
     readonly useRouter: UnwrapRef<typeof import('vue-router')['useRouter']>

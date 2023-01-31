@@ -19,9 +19,7 @@ const emits = defineEmits(['update:value'])
         <div v-if="label" text-sm font-medium text-gray-700>
           {{ label }}
         </div>
-        <div text-xs text-gray-500>
-          {{ description }}
-        </div>
+        <div text-xs text-gray-500 v-html="description" />
       </div>
     </div>
     <slot />

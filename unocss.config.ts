@@ -53,6 +53,13 @@ export default defineConfig({
         gray: '##E5E7EB',
         greyStroke: ' #E0E0E0',
       },
+      audit: {
+        safe: '#0b942b',
+        low: '#43c861',
+        medium: '#ef801a',
+        high: '#c22821',
+        critical: '#680702',
+      },
     },
   },
 })
