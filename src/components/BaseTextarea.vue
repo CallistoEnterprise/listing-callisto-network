@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import Popper from 'vue3-popper'
 import type BaseValidator from '~/models/BaseValidator'
 
 interface Props {
   label?: string
+  labelHint?: string
   value?: string
   placeholder?: string
   required?: boolean
@@ -28,7 +30,7 @@ const modelValue = computed({
 const validate = () => {
   if (props.required && ([undefined, null, '', ' '].includes(modelValue.value))) {
     isValid.value = false
-    errMessage.value = 'Tato položka je povinná'
+    errMessage.value = 'This field is required'
     return
   }
 
@@ -57,7 +59,21 @@ defineExpose({ validate, isValid })
 
 <template>
   <div>
-    <label v-if="label" class="block text-sm font-medium text-gray-700">{{ label }}</label>
+    <div v-if="label || !!$slots.hint" text-gray-700 text-sm flex font-medium flex-wrap gap-8px justify-between items-end :class="{ 'text-red-500': errMessage }">
+      <h2>
+        {{ label }}
+        <span v-if="required">*</span>
+        <Popper v-if="labelHint" hover>
+          <div i-heroicons-outline-information-circle text-18px />
+          <template #content>
+            <div app-hint v-html="labelHint" />
+          </template>
+        </Popper>
+      </h2>
+      <div v-if="!!$slots.hint" text-gray-700>
+        <slot name="hint" />
+      </div>
+    </div>
 
     <div
       flex items-center rounded-md shadow-sm bg-white border-gray-300 border-1px mt-4px

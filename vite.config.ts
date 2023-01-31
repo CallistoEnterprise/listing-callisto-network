@@ -1,6 +1,5 @@
 import path from 'path'
 import { defineConfig } from 'vite'
-import Preview from 'vite-plugin-vue-component-preview'
 import Vue from '@vitejs/plugin-vue'
 import Pages from 'vite-plugin-pages'
 import generateSitemap from 'vite-ssg-sitemap'
@@ -9,11 +8,13 @@ import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Markdown from 'vite-plugin-vue-markdown'
 import Inspect from 'vite-plugin-inspect'
-import Inspector from 'vite-plugin-vue-inspector'
 import LinkAttributes from 'markdown-it-link-attributes'
 import Unocss from 'unocss/vite'
 import Shiki from 'markdown-it-shiki'
-import VueMacros from 'unplugin-vue-macros/vite'
+
+// see: https://www.npmjs.com/package/web3modal
+import nodePolyfills from 'rollup-plugin-polyfill-node'
+const production = process.env.NODE_ENV === 'production'
 
 export default defineConfig({
   resolve: {
@@ -23,15 +24,14 @@ export default defineConfig({
   },
 
   plugins: [
-    Preview(),
-
-    VueMacros({
-      plugins: {
-        vue: Vue({
-          include: [/\.vue$/, /\.md$/],
-          reactivityTransform: true,
-        }),
-      },
+    // ↓ Needed for development mode (see: https://www.npmjs.com/package/web3modal)
+    !production
+      && nodePolyfills({
+        include: ['node_modules/**/*.js', /node_modules\/.vite\/.*js/],
+      }),
+    Vue({
+      include: [/\.vue$/, /\.md$/],
+      reactivityTransform: true,
     }),
 
     // https://github.com/hannoeru/vite-plugin-pages
@@ -54,7 +54,6 @@ export default defineConfig({
       dts: 'src/auto-imports.d.ts',
       dirs: [
         'src/composables',
-        'src/stores',
       ],
       vueTemplate: true,
     }),
@@ -75,7 +74,7 @@ export default defineConfig({
     // https://github.com/antfu/vite-plugin-vue-markdown
     // Don't need this? Try vitesse-lite: https://github.com/antfu/vitesse-lite
     Markdown({
-      wrapperClasses: 'prose prose-sm text-left',
+      wrapperClasses: 'prose prose-sm text-left m-auto',
       headEnabled: true,
       markdownItSetup(md) {
         // https://prismjs.com/
@@ -98,12 +97,27 @@ export default defineConfig({
     // https://github.com/antfu/vite-plugin-inspect
     // Visit http://localhost:3333/__inspect/ to see the inspector
     Inspect(),
-
-    // https://github.com/webfansplz/vite-plugin-vue-inspector
-    Inspector({
-      toggleButtonVisibility: 'never',
-    }),
   ],
+  build: {
+    rollupOptions: {
+      plugins: [
+        // ↓ Needed for build (see: https://www.npmjs.com/package/web3modal)
+        nodePolyfills() as any,
+      ],
+    },
+    // ↓ Needed for build if using WalletConnect and other providers
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
+  },
+  // https://github.com/vitest-dev/vitest
+  test: {
+    include: ['test/**/*.test.ts'],
+    environment: 'jsdom',
+    deps: {
+      inline: ['@vue', '@vueuse', 'vue-demi'],
+    },
+  },
 
   // https://github.com/antfu/vite-ssg
   ssgOptions: {

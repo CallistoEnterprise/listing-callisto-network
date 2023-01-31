@@ -3,6 +3,7 @@ export interface FormRequest {
   symbol: string
   address: string
   chainId: number
+  icon: string
   about: string
   website: string
   email: string
@@ -11,6 +12,17 @@ export interface FormRequest {
   includeHub: boolean
   includeSoy: boolean
   includeBridge: boolean
-  securityAudit: boolean
+  securityAudit: string
+  securityAuditUrl: string
   createFarm: boolean
+  farmToken: string
+  farmDuration: number
+  farmMultiplier: string
+  payment: {
+    price: any
+    soyPrice: number
+    destination: string
+    txHash: string
+  }
+  vlidationOnly: boolean
 }
