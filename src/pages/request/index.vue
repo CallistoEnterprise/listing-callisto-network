@@ -178,7 +178,7 @@ const buyCloText = 'You can buy more on <a underline target="_blank" href="https
     </div>
 
     <div space-y-8 divide-y divide-gray-200 mt="48px">
-      <ErrorAlert v-if="!hasBalance" title="Insuficient balance" :errors="['You don\'t have enough SOY', `Your balance is ${soyBalance.toFixed(2)} SOY`, buyCloText]" />
+      <ErrorAlert v-if="!hasBalance" title="Insuficient balance" :errors="['You don\'t have enough SOY', `Your balance is ${soyBalance?.toFixed(2)} SOY`, buyCloText]" />
       <div space-y-6 sm:space-y-5>
         <div>
           <div font-medium text-lg text-gray-900>
