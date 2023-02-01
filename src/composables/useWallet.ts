@@ -158,6 +158,7 @@ export default function useWallet() {
     ensName: readonly(ensName),
     avatar: readonly(avatar),
     isLogged,
+    isMainnet: computed(() => import.meta.env.VITE_CHAIN_ID === '820'),
     setWalletProvider,
     disconnectWallet,
     switchNetwork,

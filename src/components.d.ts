@@ -13,6 +13,7 @@ declare module '@vue/runtime-core' {
     BaseNotification: typeof import('./components/BaseNotification.vue')['default']
     BaseSelect: typeof import('./components/BaseSelect.vue')['default']
     BaseTextarea: typeof import('./components/BaseTextarea.vue')['default']
+    ErrorAlert: typeof import('./components/ErrorAlert.vue')['default']
     Footer: typeof import('./components/Footer.vue')['default']
     Home: typeof import('./components/Home.md')['default']
     ModalWrongNetwork: typeof import('./components/ModalWrongNetwork.vue')['default']
