@@ -5,7 +5,7 @@ import priceFeedAbi from '~/contracts/abi/cloPriceFeed.json'
 const cloPrice = ref<number>(0)
 const soyPrice = ref<number>(0)
 
-const priceFeed = new Contract('0x9bFc3046ea26f8B09D3E85bd22AEc96C80D957e3', priceFeedAbi, nodeProvider.value)
+const priceFeed = new Contract(import.meta.env.VITE_PRICE_FEED_ADDR, priceFeedAbi, nodeProvider.value)
 
 const parseNumber = (value: any): number => {
   try {
@@ -17,13 +17,20 @@ const parseNumber = (value: any): number => {
 }
 
 const fetchTokenPrices = async () => {
-  const [clo, soy] = await Promise.all([
-    await priceFeed.getPrice('0x0000000000000000000000000000000000000001'),
-    await priceFeed.getPrice(import.meta.env.VITE_SOY_ADDR),
-  ])
+  const { isMainnet } = useWallet()
 
-  cloPrice.value = parseNumber(ethers.utils.formatUnits(clo, 18))
-  soyPrice.value = parseNumber(ethers.utils.formatUnits(soy, 18))
+  if (isMainnet.value) {
+    const [clo, soy] = await Promise.all([
+      await priceFeed.getPrice('0x0000000000000000000000000000000000000001'),
+      await priceFeed.getPrice(import.meta.env.VITE_SOY_ADDR),
+    ])
+    cloPrice.value = parseNumber(ethers.utils.formatUnits(clo, 18))
+    soyPrice.value = parseNumber(ethers.utils.formatUnits(soy, 18))
+  }
+  else {
+    cloPrice.value = 1
+    soyPrice.value = 1
+  }
 }
 
 watch(nodeProvider, async (newProvider) => {

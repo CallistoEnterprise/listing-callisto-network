@@ -22,6 +22,8 @@ const {
   selectedRequestType,
   isChainCallisto,
   finalPrice,
+  hasBalance,
+  soyBalance,
   sendTx,
 } = useRequest()
 
@@ -143,6 +145,8 @@ const sendRequest = async () => {
     else toastError({ heading: 'Request Failed', content: 'The request failed. Please copy the transcript of the form and contact support with the data', replaceID: toastId })
   }
 }
+
+const buyCloText = 'You can buy more on <a underline target="_blank" href="https://app.soy.finance/swap">Soy.finance</a>'
 </script>
 
 <template>
@@ -174,6 +178,7 @@ const sendRequest = async () => {
     </div>
 
     <div space-y-8 divide-y divide-gray-200 mt="48px">
+      <ErrorAlert v-if="!hasBalance" title="Insuficient balance" :errors="['You don\'t have enough SOY', `Your balance is ${soyBalance?.toFixed(2)} SOY`, buyCloText]" />
       <div space-y-6 sm:space-y-5>
         <div>
           <div font-medium text-lg text-gray-900>
